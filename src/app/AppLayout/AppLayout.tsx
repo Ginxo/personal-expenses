@@ -29,9 +29,9 @@ import {
   ToolbarItem,
 } from '@patternfly/react-core';
 import { BarsIcon } from '@patternfly/react-icons';
-import BellIcon from '@patternfly/react-icons/dist/esm/icons/bell-icon';
-import CogIcon from '@patternfly/react-icons/dist/esm/icons/cog-icon';
-import QuestionCircleIcon from '@patternfly/react-icons/dist/esm/icons/question-circle-icon';
+import { BellIcon } from '@patternfly/react-icons';
+import { CogIcon } from '@patternfly/react-icons';
+import { QuestionCircleIcon } from '@patternfly/react-icons';
 import * as React from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../bgimages/logo-nb.svg';
