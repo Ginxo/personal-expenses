@@ -10,12 +10,12 @@ jobs:
       group: install-${{ github.event_name }}-${{ github.head_ref }}-ubuntu-latest-node-latest
       cancel-in-progress: true
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - uses: actions/cache@v4
         with:
           path: './node_modules'
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -30,13 +30,13 @@ jobs:
       group: lint-${{ github.event_name }}-${{ github.head_ref }}-ubuntu-latest-node-latest
       cancel-in-progress: true
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - uses: actions/cache/restore@v4
         with:
           path: './node_modules'
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
           fail-on-cache-miss: true
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -51,13 +51,13 @@ jobs:
       group: test-${{ github.event_name }}-${{ github.head_ref }}-ubuntu-latest-node-latest
       cancel-in-progress: true
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - uses: actions/cache/restore@v4
         with:
           path: './node_modules'
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
           fail-on-cache-miss: true
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -72,13 +72,13 @@ jobs:
       group: build-${{ github.event_name }}-${{ github.head_ref }}-ubuntu-latest-node-latest
       cancel-in-progress: true
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - uses: actions/cache/restore@v4
         with:
           path: './node_modules'
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
           fail-on-cache-miss: true
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
