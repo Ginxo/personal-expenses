@@ -1,0 +1,179 @@
+{
+  "uuid": "c444e550-a7da-407e-a99c-ec185752d984",
+  "lastMigration": 33,
+  "name": "Movements API",
+  "endpointPrefix": "api",
+  "latency": 200,
+  "port": 3000,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "86ab47f6-b5fb-4cad-b87d-93daff82baf7",
+      "type": "crud",
+      "documentation": "Endpoint performing CRUD operations on a data bucket (automatically creates GET, POST, PUT, DELETE routes)",
+      "method": "",
+      "endpoint": "movements",
+      "responses": [
+        {
+          "uuid": "ff0f61cf-162b-4aaa-bb6d-1ce3bdd44c6f",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Perform CRUD operations on the \"Users\" databucket (\"Data\" tab at the top)",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "o5a7",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "e66d2071-ea13-415b-b7a1-3159a05b96a2",
+      "type": "crud",
+      "documentation": "",
+      "method": "",
+      "endpoint": "categories",
+      "responses": [
+        {
+          "uuid": "b7177cb1-2915-4020-ac44-7b1fde7034e1",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "i8o9",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "daec5f16-e718-4bad-b4cf-410ed8fac93f",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "bulk/movements",
+      "responses": [
+        {
+          "uuid": "f106c9db-e1a4-4e76-bac1-aaf0cf71b313",
+          "body": "{}",
+          "latency": 500,
+          "statusCode": 201,
+          "label": "",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "o5a7",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "86ab47f6-b5fb-4cad-b87d-93daff82baf7"
+    },
+    {
+      "type": "route",
+      "uuid": "e66d2071-ea13-415b-b7a1-3159a05b96a2"
+    },
+    {
+      "type": "route",
+      "uuid": "daec5f16-e718-4bad-b4cf-410ed8fac93f"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "key": "Access-Control-Allow-Origin",
+      "value": "*"
+    },
+    {
+      "key": "Access-Control-Allow-Methods",
+      "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+    },
+    {
+      "key": "Access-Control-Allow-Headers",
+      "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [
+    {
+      "uuid": "2efca4d7-3211-4fcd-ba02-053aeb2bda56",
+      "id": "o5a7",
+      "name": "Movements",
+      "documentation": "",
+      "value": "{\n  \"items\": [\n    {{#repeat (queryParam 'size') (queryParam 'size')}}\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"date\": \"{{faker 'date.anytime'}}\",\n      \"name\": \"{{faker 'word.words'}}\",\n      \"description\": \"{{faker 'word.words'}}\",\n      \"amount\": \"{{faker 'number.float' min=-1000 max=1000}}\",\n      \"category\": {\n        \"id\": \"{{faker 'string.uuid'}}\",\n        \"name\": \"{{faker 'word.noun'}}\"\n      },\n      \"type\": \"{{oneOf (array 'income' 'expense')}}\"\n    }\n    {{/repeat}}\n  ],\n  \"total\": 99\n}"
+    },
+    {
+      "uuid": "1b1f8e76-8b25-4c94-9ddc-cd8dcac9a8a6",
+      "id": "i8o9",
+      "name": "Categories",
+      "documentation": "",
+      "value": "{\n  \"items\": [\n    {{#repeat (queryParam 'size') (queryParam 'size')}}\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"name\": \"{{faker 'word.noun'}}\"\n    }\n    {{/repeat}}\n  ],\n  \"total\": 20\n}"
+    }
+  ],
+  "callbacks": []
+}
