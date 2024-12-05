@@ -7,7 +7,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import * as React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { queryClient } from './queryClient';
-import { config } from 'src/config';
+import { config } from '../config';
 
 const App: React.FunctionComponent = () => {
   React.useEffect(() => config.dateConfig(), []);

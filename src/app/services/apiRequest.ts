@@ -10,7 +10,6 @@ export const authInterceptor = (client: AxiosInstance): AxiosInstance => {
       ...cfg,
       url: `${BASE_URL}${cfg.url}`,
     };
-    delete updatedCfg.customHost;
     return updatedCfg as InternalAxiosRequestConfig;
   });
   return client;
