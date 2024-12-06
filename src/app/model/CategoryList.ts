@@ -1,5 +1,6 @@
 import { Category } from './Category';
+import { Meta } from './Meta';
 
-type CategoryList = { items: Category[]; total: number };
+type CategoryList = { data: Category[]; meta: Meta };
 
 export { CategoryList };

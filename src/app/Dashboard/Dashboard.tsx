@@ -37,9 +37,9 @@ const Dashboard: React.FunctionComponent = () => {
         Dashboard
       </Title>
       <MovementsTable
-        movements={fetchMovements.data?.items}
-        categories={fetchCategories.data?.items}
-        total={fetchMovements.data?.total}
+        movements={fetchMovements.data?.data}
+        categories={fetchCategories.data?.data}
+        total={fetchMovements.data?.meta.total}
         queryStatus={fetchMovements.status}
         patchStatus={patchMovements.status}
         bulkMovementsStatus={bulkMovements.status}

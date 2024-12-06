@@ -13,7 +13,7 @@
       "type": "crud",
       "documentation": "Endpoint performing CRUD operations on a data bucket (automatically creates GET, POST, PUT, DELETE routes)",
       "method": "",
-      "endpoint": "movements",
+      "endpoint": "movement",
       "responses": [
         {
           "uuid": "ff0f61cf-162b-4aaa-bb6d-1ce3bdd44c6f",
@@ -44,7 +44,7 @@
       "type": "crud",
       "documentation": "",
       "method": "",
-      "endpoint": "categories",
+      "endpoint": "category",
       "responses": [
         {
           "uuid": "b7177cb1-2915-4020-ac44-7b1fde7034e1",
@@ -100,6 +100,37 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "3bee38b1-e3db-476d-a130-c62ca60a9dab",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "user",
+      "responses": [
+        {
+          "uuid": "117e9c91-60c8-43f7-9583-9b6dcb9a56a0",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "bkfs",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -114,6 +145,10 @@
     {
       "type": "route",
       "uuid": "daec5f16-e718-4bad-b4cf-410ed8fac93f"
+    },
+    {
+      "type": "route",
+      "uuid": "3bee38b1-e3db-476d-a130-c62ca60a9dab"
     }
   ],
   "proxyMode": false,
@@ -165,14 +200,21 @@
       "id": "o5a7",
       "name": "Movements",
       "documentation": "",
-      "value": "{\n  \"items\": [\n    {{#repeat (queryParam 'size') (queryParam 'size')}}\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"date\": \"{{faker 'date.anytime'}}\",\n      \"name\": \"{{faker 'word.words'}}\",\n      \"description\": \"{{faker 'word.words'}}\",\n      \"amount\": \"{{faker 'number.float' min=-1000 max=1000}}\",\n      \"category\": {\n        \"id\": \"{{faker 'string.uuid'}}\",\n        \"name\": \"{{faker 'word.noun'}}\"\n      },\n      \"type\": \"{{oneOf (array 'income' 'expense')}}\"\n    }\n    {{/repeat}}\n  ],\n  \"total\": 99\n}"
+      "value": "{\n  \"data\": [\n    {{#repeat (queryParam 'size') (queryParam 'size')}}\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"attributes\": {\n        \"date\": \"{{faker 'date.anytime'}}\",\n        \"name\": \"{{faker 'word.words'}}\",\n        \"description\": \"{{faker 'word.words'}}\",\n        \"amount\": \"{{faker 'number.float' min=-1000 max=1000}}\",\n        \"categoryId\": \"{{faker 'number.int' min=1 max=10}}\",\n        \"userId\": 1,\n        \"type\": \"{{oneOf (array 'income' 'expense')}}\"\n      }\n    }\n    {{/repeat}}\n  ],\n  \"meta\": {\n    \"total\": 99\n  }\n}"
     },
     {
       "uuid": "1b1f8e76-8b25-4c94-9ddc-cd8dcac9a8a6",
       "id": "i8o9",
       "name": "Categories",
       "documentation": "",
-      "value": "{\n  \"items\": [\n    {{#repeat (queryParam 'size') (queryParam 'size')}}\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"name\": \"{{faker 'word.noun'}}\"\n    }\n    {{/repeat}}\n  ],\n  \"total\": 20\n}"
+      "value": "{\n  \"data\": [\n    {{#repeat (queryParam 'size') (queryParam 'size')}}\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"attributes\": {\n        \"name\": \"{{faker 'word.noun'}}\"\n      }\n    }\n    {{/repeat}}\n  ],\n  \"meta\": {\n    \"total\": 20\n  }\n}"
+    },
+    {
+      "uuid": "0afbbbec-8c23-41a7-a42a-c278bbe77d1b",
+      "id": "bkfs",
+      "name": "User",
+      "documentation": "",
+      "value": "{\n  \"jsonapi\": { \"version\": \"1.1\" },\n  \"links\": { \"self\": \"http://localhost:3001/api/user/1\" },\n  \"data\": {\n    \"type\": \"user\",\n    \"id\": \"1\",\n    \"attributes\": { \"email\": \"ginxaco@gmail.com\" },\n    \"links\": { \"self\": \"http://localhost:3001/api/user/1\" },\n    \"relationships\": {\n      \"movements\": {\n        \"links\": {\n          \"self\": \"http://localhost:3001/api/user/1/relationships/movements\",\n          \"related\": \"http://localhost:3001/api/user/1/movements\"\n        },\n        \"data\": []\n      },\n      \"categories\": {\n        \"links\": {\n          \"self\": \"http://localhost:3001/api/user/1/relationships/categories\",\n          \"related\": \"http://localhost:3001/api/user/1/categories\"\n        },\n        \"data\": []\n      }\n    }\n  }\n}\n"
     }
   ],
   "callbacks": []
