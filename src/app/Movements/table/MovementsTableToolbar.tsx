@@ -55,7 +55,7 @@ const MovementsTableToolbar = ({
   const [selectedCategories, setSelectedCategories] = React.useState<Category[]>([]);
 
   const [isTypesSelectOpen, setIsTypesSelectOpen] = React.useState(false);
-  const [selectedTypes, setSelectedTypes] = React.useState<Movement['type'][]>([]);
+  const [selectedTypes, setSelectedTypes] = React.useState<Movement['attributes']['type'][]>([]);
 
   // TODO: use formik
   const clearValues = () => {
@@ -172,7 +172,7 @@ const MovementsTableToolbar = ({
                     value={category.id}
                     isSelected={selectedCategories.includes(category)}
                   >
-                    {category.name}
+                    {category.attributes.name}
                   </SelectOption>
                 ))}
               </SelectList>
@@ -185,10 +185,10 @@ const MovementsTableToolbar = ({
               isOpen={isTypesSelectOpen}
               selected={selectedTypes}
               onSelect={(_e, type) => {
-                if (selectedTypes.includes(type as Movement['type'])) {
-                  setSelectedTypes(selectedTypes.filter((t) => t !== (type as Movement['type'])));
+                if (selectedTypes.includes(type as Movement['attributes']['type'])) {
+                  setSelectedTypes(selectedTypes.filter((t) => t !== (type as Movement['attributes']['type'])));
                 } else {
-                  setSelectedTypes([...selectedTypes, type as Movement['type']]);
+                  setSelectedTypes([...selectedTypes, type as Movement['attributes']['type']]);
                 }
               }}
               onOpenChange={(nextOpen: boolean) => setIsTypesSelectOpen(nextOpen)}

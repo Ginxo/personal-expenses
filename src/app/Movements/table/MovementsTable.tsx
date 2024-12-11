@@ -18,11 +18,11 @@ import { MinusCircleIcon, PencilAltIcon, PlusCircleIcon, TrashIcon } from '@patt
 import { Table, TableVariant, Tbody, Td, Th, ThProps, Thead, Tr } from '@patternfly/react-table';
 import { MutationStatus, QueryStatus } from '@tanstack/react-query';
 import React, { useMemo } from 'react';
+import { BulkLoadMovementModal } from '../modals/BulkLoadMovementModal';
 import { BulkMovementEditModal } from '../modals/BulkMovementEditModal';
 import { CreateEditMovementModal } from '../modals/CreateEditMovementModal';
 import { MovementsTableSkeleton } from './MovementsTableSkeleton';
 import { MovementsTableToolbar } from './MovementsTableToolbar';
-import { BulkLoadMovementModal } from '../modals/BulkLoadMovementModal';
 
 type MovementsTableProps = {
   movements?: Movement[];
@@ -208,8 +208,8 @@ const MovementsTable = ({
                           }}
                         />
                         <Td>
-                          <Tooltip aria="none" aria-live="polite" content={movement.date}>
-                            <Timestamp dateFormat="short" date={new Date(movement.date)} />
+                          <Tooltip aria="none" aria-live="polite" content={movement.attributes.date}>
+                            <Timestamp dateFormat="short" date={new Date(movement.attributes.date)} />
                           </Tooltip>
                         </Td>
                         <Td>
@@ -217,26 +217,26 @@ const MovementsTable = ({
                             <Tooltip
                               aria="none"
                               aria-live="polite"
-                              content={movement.type === 'income' ? 'Ingreso' : 'Gasto'}
+                              content={movement.attributes.type === 'income' ? 'Ingreso' : 'Gasto'}
                             >
                               <Icon
                                 size="xl"
                                 iconSize="md"
                                 isInline
-                                status={movement.type === 'income' ? 'success' : 'danger'}
+                                status={movement.attributes.type === 'income' ? 'success' : 'danger'}
                               >
-                                {movement.type === 'income' ? <PlusCircleIcon /> : <MinusCircleIcon />}
+                                {movement.attributes.type === 'income' ? <PlusCircleIcon /> : <MinusCircleIcon />}
                               </Icon>
                             </Tooltip>
-                            <Tooltip aria="none" aria-live="polite" content={movement.description}>
-                              <span>{movement.name}</span>
+                            <Tooltip aria="none" aria-live="polite" content={movement.attributes.description}>
+                              <span>{movement.attributes.name}</span>
                             </Tooltip>
                           </>
                         </Td>
                         <Td>
-                          <span style={{ color: movement.amount < 0 ? 'red' : 'green', fontWeight: 'bold' }}>
+                          <span style={{ color: movement.attributes.amount < 0 ? 'red' : 'green', fontWeight: 'bold' }}>
                             {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(
-                              movement.amount,
+                              movement.attributes.amount,
                             )}
                           </span>
                         </Td>
@@ -245,13 +245,18 @@ const MovementsTable = ({
                             role="menu"
                             id="edit-categories-select"
                             isOpen={openedCategories?.[movement.id]}
-                            selected={movement.category}
+                            selected={movement.attributes.categoryId}
                             onSelect={(_e, categoryId) => {
                               setOpenedCategories({ ...openedCategories, [movement.id]: false });
                               patchMovements([
                                 {
                                   ...movement,
-                                  category: categories?.find((c) => c.id === categoryId) ?? movement.category,
+                                  attributes: {
+                                    ...movement.attributes,
+                                    categoryId:
+                                      categories?.find((c) => c.id === categoryId)?.id ??
+                                      movement.attributes.categoryId,
+                                  },
                                 },
                               ]);
                             }}
@@ -275,18 +280,20 @@ const MovementsTable = ({
                                 style={{ width: '190px' }}
                                 isDisabled={isUpdateDisabled}
                               >
-                                {movement.category.name.toUpperCase()}
+                                {categories
+                                  ?.find((c) => c.id === movement.attributes.categoryId)
+                                  ?.attributes.name.toUpperCase()}
                               </MenuToggle>
                             )}
                           >
                             <SelectList>
                               {categories?.map((category) => (
                                 <SelectOption
-                                  isDisabled={isUpdateDisabled || category.id === movement.category.id}
+                                  isDisabled={isUpdateDisabled || category.id === movement.attributes.categoryId}
                                   key={category.id}
                                   value={category.id}
                                 >
-                                  {category.name}
+                                  {category.attributes.name}
                                 </SelectOption>
                               ))}
                             </SelectList>
@@ -330,11 +337,15 @@ const MovementsTable = ({
         <BulkMovementEditModal
           numberOfSelectedMovements={selectedMovements.length}
           categories={categories}
-          onSubmitCallback={({ category, type }: Partial<Pick<Movement, 'category' | 'type'>>) =>
+          onSubmitCallback={({ categoryId, type }: Partial<Pick<Movement['attributes'], 'categoryId' | 'type'>>) =>
             patchMovements(
               selectedMovements?.map(
                 (movement) =>
-                  ({ ...movement, category: category ?? movement.category, type: type ?? movement.type }) as Movement,
+                  ({
+                    ...movement,
+                    categoryId: categoryId ?? movement.attributes.categoryId,
+                    type: type ?? movement.attributes.type,
+                  }) as Movement,
               ) ?? [],
             )
           }

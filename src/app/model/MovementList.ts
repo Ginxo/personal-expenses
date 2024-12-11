@@ -1,5 +1,6 @@
+import { Meta } from './Meta';
 import { Movement } from './Movement';
 
-type MovementList = { items: Movement[]; total: number };
+type MovementList = { data: Movement[]; meta: Meta };
 
 export { MovementList };

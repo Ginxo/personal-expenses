@@ -20,20 +20,22 @@ import React from 'react';
 type CreateEditMovementModalProps = {
   movement?: Partial<Movement>;
   categories?: Category[];
-  onSubmitCallback: (movement: Partial<Movement>) => void;
+  onSubmitCallback: (movement: Movement) => void;
   onCloseCallback: () => void;
 };
 const CreateEditMovementModal = ({
   movement = {
-    date: new Date().getTime(),
-    type: 'income',
+    attributes: {
+      date: new Date().getTime(),
+      type: 'income',
+    } as Movement['attributes'],
   },
   categories,
   onSubmitCallback,
   onCloseCallback,
 }: CreateEditMovementModalProps) => {
   const [selectedCategoryId, setSelectedCategoryId] = React.useState<string | undefined>(categories?.[0]?.id ?? '');
-  const [movementState, setMovementState] = React.useState<Partial<Movement>>({ ...movement });
+  const [movementState, setMovementState] = React.useState<Movement>({ ...(movement as Movement) });
   return (
     <Modal
       isOpen
@@ -47,36 +49,52 @@ const CreateEditMovementModal = ({
       <ModalBody id="modal-box-body-with-dropdown">
         <FormGroup label="Fecha" fieldId="fecha">
           <DatePicker
-            onChange={(_, _value, date) => setMovementState({ ...movementState, date: date ? date.getTime() : 0 })}
-            onBlur={(_, _value, date) => setMovementState({ ...movementState, date: date ? date.getTime() : 0 })}
-            value={dayjs.utc(movement.date).format('YYYY-MM-DD')}
+            onChange={(_, _value, date) =>
+              setMovementState({
+                ...movementState,
+                attributes: { ...movementState.attributes, date: date ? date.getTime() : 0 },
+              })
+            }
+            onBlur={(_, _value, date) =>
+              setMovementState({
+                ...movementState,
+                attributes: { ...movementState.attributes, date: date ? date.getTime() : 0 },
+              })
+            }
+            value={dayjs.utc(movement.attributes?.date).format('YYYY-MM-DD')}
           />
         </FormGroup>
         <br />
         <FormGroup label="Concepto" fieldId="name">
           <TextInput
             type="text"
-            value={movementState.name}
+            value={movementState.attributes.name}
             placeholder="Concepto"
-            onChange={(_event, name) => setMovementState({ ...movementState, name })}
+            onChange={(_event, name) =>
+              setMovementState({ ...movementState, attributes: { ...movementState.attributes, name } })
+            }
           />
         </FormGroup>
         <br />
         <FormGroup label="Descripción" fieldId="description">
           <TextInput
             type="text"
-            value={movementState.description}
+            value={movementState.attributes.description}
             placeholder="Descripción"
-            onChange={(_event, description) => setMovementState({ ...movementState, description })}
+            onChange={(_event, description) =>
+              setMovementState({ ...movementState, attributes: { ...movementState.attributes, description } })
+            }
           />
         </FormGroup>
         <br />
         <FormGroup label="Importe" fieldId="amount">
           <TextInput
             type="number"
-            value={movementState.amount}
+            value={movementState.attributes.amount}
             placeholder="Importe"
-            onChange={(_event, amount) => setMovementState({ ...movementState, amount: +amount })}
+            onChange={(_event, amount) =>
+              setMovementState({ ...movementState, attributes: { ...movementState.attributes, amount: +amount } })
+            }
             aria-label="amount to insert"
             min={0}
             max={100000}
@@ -91,15 +109,20 @@ const CreateEditMovementModal = ({
             ouiaId="CategoryFormSelect"
           >
             {categories?.map((category, index) => (
-              <FormSelectOption key={index} value={category.id} label={category.name} />
+              <FormSelectOption key={index} value={category.id} label={category.attributes.name} />
             ))}
           </FormSelect>
         </FormGroup>
         <br />
         <FormGroup label="Typo" fieldId="tipo">
           <FormSelect
-            value={movementState.type}
-            onChange={(_e, value) => setMovementState({ ...movementState, type: value as Movement['type'] })}
+            value={movementState.attributes.type}
+            onChange={(_event, type) =>
+              setMovementState({
+                ...movementState,
+                attributes: { ...movementState.attributes, type: type as Movement['attributes']['type'] },
+              })
+            }
             aria-label="Type FormSelect Input"
             ouiaId="TypeFormSelect"
           >
@@ -115,8 +138,13 @@ const CreateEditMovementModal = ({
           variant="primary"
           onClick={() => {
             const category = categories?.find((category) => category.id === selectedCategoryId);
-            onSubmitCallback({ ...movementState, category });
-            onCloseCallback();
+            if (category) {
+              onSubmitCallback({
+                ...movementState,
+                attributes: { ...movementState.attributes, categoryId: category.id },
+              });
+              onCloseCallback();
+            }
           }}
         >
           Confirm

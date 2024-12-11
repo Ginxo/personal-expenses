@@ -10,9 +10,11 @@ const excelBulkTreatment = (content: string): Movement[] =>
       (movements: Movement[], lineArr: string[]) => [
         ...movements,
         {
-          date: dayjs(lineArr[0], 'DD/MM/YYYY').toDate().getTime(),
-          name: lineArr[1],
-          amount: +lineArr[2],
+          attributes: {
+            date: dayjs(lineArr[0], 'DD/MM/YYYY').toDate().getTime(),
+            name: lineArr[1],
+            amount: +lineArr[2],
+          },
         } as Movement,
       ],
       [] as Movement[],

@@ -7,7 +7,9 @@ git clone https://github.com/Ginxo/personal-expenses
 cd personal-expenses
 yarn install && yarn start:dev
 ```
+
 ## Development scripts
+
 ```sh
 # Install development/build dependencies
 yarn install
@@ -37,13 +39,38 @@ yarn bundle-profile:analyze
 yarn start
 ```
 
+## API
+
+The API is implemented with express connecting it to prisma
+
+To generate API doc
+```
+yarn stack:generate
+```
+
+To start up the server
+```
+yarn start:api
+```
+
+
+## BBDD
+
+For the database connection prisma is being used.
+
+```
+npx zenstack@latest init
+yarn stack:generate
+npx prisma db push
+```
+
 ## Configurations
-* [TypeScript Config](./tsconfig.json)
-* [Webpack Config](./webpack.common.js)
-* [Jest Config](./jest.config.js)
-* [Editor Config](./.editorconfig)
+
+- [TypeScript Config](./tsconfig.json)
+- [Webpack Config](./webpack.common.js)
+- [Jest Config](./jest.config.js)
+- [Editor Config](./.editorconfig)
 
 ## Authentication
 
 the authentication is performed throw auth0 service. See `index.ts` `Auth0Provider` for getting/changing domain/clientId
-
