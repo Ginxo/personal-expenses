@@ -6,9 +6,11 @@ import { auth } from 'express-oauth2-jwt-bearer';
 import swaggerUI from 'swagger-ui-express';
 import fs from 'fs';
 import path from 'path';
+import cors from 'cors';
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const checkJwt = auth({
   audience: 'https://personal-expenses/api',

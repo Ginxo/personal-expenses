@@ -1618,6 +1618,96 @@
             }
           },
           {
+            "name": "filter[amount]",
+            "required": false,
+            "description": "Equality filter for \"amount\"",
+            "in": "query",
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          {
+            "name": "filter[amount$lt]",
+            "required": false,
+            "description": "Less-than filter for \"amount\"",
+            "in": "query",
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          {
+            "name": "filter[amount$lte]",
+            "required": false,
+            "description": "Less-than or equal filter for \"amount\"",
+            "in": "query",
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          {
+            "name": "filter[amount$gt]",
+            "required": false,
+            "description": "Greater-than filter for \"amount\"",
+            "in": "query",
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          {
+            "name": "filter[amount$gte]",
+            "required": false,
+            "description": "Greater-than or equal filter for \"amount\"",
+            "in": "query",
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          {
             "name": "filter[type]",
             "required": false,
             "description": "Equality filter for \"type\"",
@@ -4013,6 +4103,7 @@
               "date",
               "name",
               "description",
+              "amount",
               "type",
               "categoryId",
               "userId"
@@ -4027,6 +4118,16 @@
               },
               "description": {
                 "type": "string"
+              },
+              "amount": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
               },
               "type": {
                 "$ref": "#/components/schemas/MovementType"
@@ -4074,7 +4175,8 @@
                 "type": "object",
                 "required": [
                   "name",
-                  "description"
+                  "description",
+                  "amount"
                 ],
                 "properties": {
                   "date": {
@@ -4086,6 +4188,16 @@
                   },
                   "description": {
                     "type": "string"
+                  },
+                  "amount": {
+                    "oneOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   },
                   "type": {
                     "$ref": "#/components/schemas/MovementType"
@@ -4144,6 +4256,16 @@
                   },
                   "description": {
                     "type": "string"
+                  },
+                  "amount": {
+                    "oneOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   },
                   "type": {
                     "$ref": "#/components/schemas/MovementType"

@@ -4,7 +4,7 @@ import { stringify } from 'qs';
 import apiRequest from '../apiRequest';
 
 const getCategories = (queryParams: Pagination) =>
-  apiRequest.get<CategoryList>(`/category/?${stringify(queryParams, { encode: false, indices: false })}`, {
+  apiRequest.get<CategoryList>(`/category?${stringify(queryParams, { encode: false, indices: false })}`, {
     headers: {
       Accept: 'application/json',
     },
