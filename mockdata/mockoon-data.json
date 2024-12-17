@@ -200,14 +200,14 @@
       "id": "o5a7",
       "name": "Movements",
       "documentation": "",
-      "value": "{\n  \"data\": [\n    {{#repeat (queryParam 'size') (queryParam 'size')}}\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"attributes\": {\n        \"date\": \"{{faker 'date.anytime'}}\",\n        \"name\": \"{{faker 'word.words'}}\",\n        \"description\": \"{{faker 'word.words'}}\",\n        \"amount\": \"{{faker 'number.float' min=-1000 max=1000}}\",\n        \"categoryId\": \"{{faker 'number.int' min=1 max=10}}\",\n        \"userId\": 1,\n        \"type\": \"{{oneOf (array 'income' 'expense')}}\"\n      }\n    }\n    {{/repeat}}\n  ],\n  \"meta\": {\n    \"total\": 99\n  }\n}"
+      "value": "{\n  \"data\": [\n    {{#repeat (queryParam 'size') (queryParam 'size')}}\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"date\": \"{{faker 'date.anytime'}}\",\n      \"name\": \"{{faker 'word.words'}}\",\n      \"description\": \"{{faker 'word.words'}}\",\n      \"amount\": \"{{faker 'number.float' min=-1000 max=1000}}\",\n      \"categoryId\": \"{{faker 'number.int' min=1 max=10}}\",\n      \"userId\": 1,\n      \"type\": \"{{oneOf (array 'income' 'expense')}}\"\n    }\n    {{/repeat}}\n  ],\n  \"meta\": {\n    \"total\": 99\n  }\n}"
     },
     {
       "uuid": "1b1f8e76-8b25-4c94-9ddc-cd8dcac9a8a6",
       "id": "i8o9",
       "name": "Categories",
       "documentation": "",
-      "value": "{\n  \"data\": [\n    {{#repeat (queryParam 'size') (queryParam 'size')}}\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"attributes\": {\n        \"name\": \"{{faker 'word.noun'}}\"\n      }\n    }\n    {{/repeat}}\n  ],\n  \"meta\": {\n    \"total\": 20\n  }\n}"
+      "value": "{\n  \"data\": [\n    {{#repeat (queryParam 'size') (queryParam 'size')}}\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"name\": \"{{faker 'word.noun'}}\"\n    }\n    {{/repeat}}\n  ],\n  \"meta\": {\n    \"total\": 20\n  }\n}"
     },
     {
       "uuid": "0afbbbec-8c23-41a7-a42a-c278bbe77d1b",

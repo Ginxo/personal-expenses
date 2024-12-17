@@ -13,7 +13,8 @@
     "start": "sirv dist --cors --single --host --port 8080",
     "start:dev": "concurrently 'webpack serve --color --progress --config webpack.dev.js' 'mockoon-cli start --data ./mockdata/mockoon-data.json'",
     "start:dev:api": "concurrently 'webpack serve --color --progress --config webpack.dev.js' 'npm run start:api'",
-    "start:api": "tsx watch api/app.ts",
+    "start:api": "tsx watch server/api/app.ts",
+    "start:apiserver": "tsx watch server/api/server.ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -27,7 +28,9 @@
     "clean": "rimraf dist",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist -u 'github-actions-bot <support+actions@github.com>'",
-    "stack:generate": "zenstack generate"
+    "db:generate": "zenstack generate --schema ./server/schema.zmodel",
+    "db:push": "prisma db push --schema ./server/prisma/schema.prisma "
+
   },
   "devDependencies": {
     "@mockoon/cli": "^9.0.0",
