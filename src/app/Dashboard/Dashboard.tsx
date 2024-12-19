@@ -45,8 +45,14 @@ const Dashboard: React.FunctionComponent = () => {
         bulkMovementsStatus={bulkMovements.status}
         movementsQuery={movementsQuery}
         queryChangeCallback={setMovementsQuery}
-        refetchMovementsCallback={fetchMovements.refetch}
-        patchMovements={(movements: Movement[]) => patchMovements.mutate(movements)}
+        refetchMovementsCallback={() => {
+          fetchMovements.refetch();
+          fetchCategories.refetch();
+        }}
+        patchMovements={(movements: Movement[]) => {
+          console.log('KIKE patchMovements', movements);
+          patchMovements.mutate(movements);
+        }}
         postMovement={(movement: Partial<Movement>) => postMovement.mutate(movement)}
         deleteMovement={(id: string) => deleteMovement.mutate(id)}
         bulkMovements={(movements: Movement[]) => bulkMovements.mutate(movements)}

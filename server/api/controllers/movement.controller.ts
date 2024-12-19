@@ -53,9 +53,25 @@ const deleteMovement = async (req: Request, res: Response) => {
 
 const updateMovements = async (req: Request, res: Response) => {
   try {
-    const updated = await prisma.movement.updateMany(req.body);
-    res.status(202).json(updated);
+    const updatedMovements = req.body
+      .map((movement) => {
+        const { id, date, name, description, amount, type, categoryId, userId } = movement;
+        return { id, date, name, description, amount, type, categoryId, userId };
+      })
+      .map(
+        async (movement) =>
+          await prisma.movement.update({
+            where: {
+              id: movement.id,
+            },
+            data: {
+              ...movement,
+            },
+          }),
+      );
+    res.status(202).json(updatedMovements);
   } catch (e) {
+    console.error('[UPDATE]', req.body, e);
     res.status(500).json({ error: e });
   }
 };
