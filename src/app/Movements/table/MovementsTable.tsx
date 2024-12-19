@@ -43,6 +43,7 @@ type MovementsTableProps = {
   deleteMovement: (id: string) => void;
   deleteMovements: (movements: Movement[]) => void;
   bulkMovements: (movements: Movement[]) => void;
+  invalidateBulkMovements: () => void;
 };
 
 const MovementsTable = ({
@@ -61,6 +62,7 @@ const MovementsTable = ({
   deleteMovement,
   deleteMovements,
   bulkMovements,
+  invalidateBulkMovements,
 }: MovementsTableProps) => {
   const [activeSortIndex, setActiveSortIndex] = React.useState<number>();
   const [activeSortDirection, setActiveSortDirection] = React.useState<'asc' | 'desc'>();
@@ -348,7 +350,10 @@ const MovementsTable = ({
       {isBulkLoadModalOpen ? (
         <BulkLoadMovementModal
           onSubmitCallback={bulkMovements}
-          onCloseCallback={() => setIsBulkLoadModalOpen(false)}
+          onCloseCallback={() => {
+            setIsBulkLoadModalOpen(false);
+            invalidateBulkMovements();
+          }}
           status={bulkMovementsStatus}
           userId={user.id}
         />

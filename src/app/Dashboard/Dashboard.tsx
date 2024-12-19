@@ -59,6 +59,7 @@ const Dashboard: React.FunctionComponent = () => {
         deleteMovement={(id: string) => deleteMovement.mutate(id)}
         deleteMovements={(movements: Movement[]) => deleteMovements.mutate(movements.map((m) => m.id))}
         bulkMovements={(movements: Movement[]) => bulkMovements.mutate(movements)}
+        invalidateBulkMovements={async () => await bulkMovements.reset()}
       />
     </PageSection>
   );
