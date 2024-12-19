@@ -25,10 +25,8 @@ type CreateEditMovementModalProps = {
 };
 const CreateEditMovementModal = ({
   movement = {
-    attributes: {
-      date: new Date().getTime(),
-      type: 'income',
-    } as Movement['attributes'],
+    date: new Date().getTime(),
+    type: 'income',
   },
   categories,
   onSubmitCallback,
@@ -52,49 +50,43 @@ const CreateEditMovementModal = ({
             onChange={(_, _value, date) =>
               setMovementState({
                 ...movementState,
-                attributes: { ...movementState.attributes, date: date ? date.getTime() : 0 },
+                date: date ? date.getTime() : 0,
               })
             }
             onBlur={(_, _value, date) =>
               setMovementState({
                 ...movementState,
-                attributes: { ...movementState.attributes, date: date ? date.getTime() : 0 },
+                date: date ? date.getTime() : 0,
               })
             }
-            value={dayjs.utc(movement.attributes?.date).format('YYYY-MM-DD')}
+            value={dayjs.utc(movement?.date).format('YYYY-MM-DD')}
           />
         </FormGroup>
         <br />
         <FormGroup label="Concepto" fieldId="name">
           <TextInput
             type="text"
-            value={movementState.attributes.name}
+            value={movementState.name}
             placeholder="Concepto"
-            onChange={(_event, name) =>
-              setMovementState({ ...movementState, attributes: { ...movementState.attributes, name } })
-            }
+            onChange={(_event, name) => setMovementState({ ...movementState, name })}
           />
         </FormGroup>
         <br />
         <FormGroup label="Descripción" fieldId="description">
           <TextInput
             type="text"
-            value={movementState.attributes.description}
+            value={movementState.description}
             placeholder="Descripción"
-            onChange={(_event, description) =>
-              setMovementState({ ...movementState, attributes: { ...movementState.attributes, description } })
-            }
+            onChange={(_event, description) => setMovementState({ ...movementState, description })}
           />
         </FormGroup>
         <br />
         <FormGroup label="Importe" fieldId="amount">
           <TextInput
             type="number"
-            value={movementState.attributes.amount}
+            value={movementState.amount}
             placeholder="Importe"
-            onChange={(_event, amount) =>
-              setMovementState({ ...movementState, attributes: { ...movementState.attributes, amount: +amount } })
-            }
+            onChange={(_event, amount) => setMovementState({ ...movementState, amount: +amount })}
             aria-label="amount to insert"
             min={0}
             max={100000}
@@ -109,18 +101,18 @@ const CreateEditMovementModal = ({
             ouiaId="CategoryFormSelect"
           >
             {categories?.map((category, index) => (
-              <FormSelectOption key={index} value={category.id} label={category.attributes.name} />
+              <FormSelectOption key={index} value={category.id} label={category.name} />
             ))}
           </FormSelect>
         </FormGroup>
         <br />
         <FormGroup label="Typo" fieldId="tipo">
           <FormSelect
-            value={movementState.attributes.type}
+            value={movementState.type}
             onChange={(_event, type) =>
               setMovementState({
                 ...movementState,
-                attributes: { ...movementState.attributes, type: type as Movement['attributes']['type'] },
+                type: type as Movement['type'],
               })
             }
             aria-label="Type FormSelect Input"
@@ -141,7 +133,8 @@ const CreateEditMovementModal = ({
             if (category) {
               onSubmitCallback({
                 ...movementState,
-                attributes: { ...movementState.attributes, categoryId: category.id },
+                categoryId: category.id,
+                category,
               });
               onCloseCallback();
             }

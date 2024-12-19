@@ -1,5 +1,5 @@
 import { Movement } from './Movement';
 
-const MovementTypes: Movement['attributes']['type'][] = ['income', 'expense'];
+const MovementTypes: Movement['type'][] = ['income', 'expense'];
 
 export { MovementTypes };

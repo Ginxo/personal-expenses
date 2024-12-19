@@ -208,8 +208,8 @@ const MovementsTable = ({
                           }}
                         />
                         <Td>
-                          <Tooltip aria="none" aria-live="polite" content={movement.attributes.date}>
-                            <Timestamp dateFormat="short" date={new Date(movement.attributes.date)} />
+                          <Tooltip aria="none" aria-live="polite" content={movement.date}>
+                            <Timestamp dateFormat="short" date={new Date(movement.date)} />
                           </Tooltip>
                         </Td>
                         <Td>
@@ -217,26 +217,26 @@ const MovementsTable = ({
                             <Tooltip
                               aria="none"
                               aria-live="polite"
-                              content={movement.attributes.type === 'income' ? 'Ingreso' : 'Gasto'}
+                              content={movement.type === 'income' ? 'Ingreso' : 'Gasto'}
                             >
                               <Icon
                                 size="xl"
                                 iconSize="md"
                                 isInline
-                                status={movement.attributes.type === 'income' ? 'success' : 'danger'}
+                                status={movement.type === 'income' ? 'success' : 'danger'}
                               >
-                                {movement.attributes.type === 'income' ? <PlusCircleIcon /> : <MinusCircleIcon />}
+                                {movement.type === 'income' ? <PlusCircleIcon /> : <MinusCircleIcon />}
                               </Icon>
                             </Tooltip>
-                            <Tooltip aria="none" aria-live="polite" content={movement.attributes.description}>
-                              <span>{movement.attributes.name}</span>
+                            <Tooltip aria="none" aria-live="polite" content={movement.description}>
+                              <span>{movement.name}</span>
                             </Tooltip>
                           </>
                         </Td>
                         <Td>
-                          <span style={{ color: movement.attributes.amount < 0 ? 'red' : 'green', fontWeight: 'bold' }}>
+                          <span style={{ color: movement.amount < 0 ? 'red' : 'green', fontWeight: 'bold' }}>
                             {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(
-                              movement.attributes.amount,
+                              movement.amount,
                             )}
                           </span>
                         </Td>
@@ -245,18 +245,13 @@ const MovementsTable = ({
                             role="menu"
                             id="edit-categories-select"
                             isOpen={openedCategories?.[movement.id]}
-                            selected={movement.attributes.categoryId}
+                            selected={movement.categoryId}
                             onSelect={(_e, categoryId) => {
                               setOpenedCategories({ ...openedCategories, [movement.id]: false });
                               patchMovements([
                                 {
                                   ...movement,
-                                  attributes: {
-                                    ...movement.attributes,
-                                    categoryId:
-                                      categories?.find((c) => c.id === categoryId)?.id ??
-                                      movement.attributes.categoryId,
-                                  },
+                                  categoryId: categories?.find((c) => c.id === categoryId)?.id ?? movement.categoryId,
                                 },
                               ]);
                             }}
@@ -280,20 +275,18 @@ const MovementsTable = ({
                                 style={{ width: '190px' }}
                                 isDisabled={isUpdateDisabled}
                               >
-                                {categories
-                                  ?.find((c) => c.id === movement.attributes.categoryId)
-                                  ?.attributes.name.toUpperCase()}
+                                {movement.category.name.toUpperCase()}
                               </MenuToggle>
                             )}
                           >
                             <SelectList>
                               {categories?.map((category) => (
                                 <SelectOption
-                                  isDisabled={isUpdateDisabled || category.id === movement.attributes.categoryId}
+                                  isDisabled={isUpdateDisabled || category.id === movement.categoryId}
                                   key={category.id}
                                   value={category.id}
                                 >
-                                  {category.attributes.name}
+                                  {category.name}
                                 </SelectOption>
                               ))}
                             </SelectList>
@@ -337,14 +330,15 @@ const MovementsTable = ({
         <BulkMovementEditModal
           numberOfSelectedMovements={selectedMovements.length}
           categories={categories}
-          onSubmitCallback={({ categoryId, type }: Partial<Pick<Movement['attributes'], 'categoryId' | 'type'>>) =>
+          onSubmitCallback={({ categoryId, type }: Partial<Pick<Movement, 'categoryId' | 'type'>>) =>
             patchMovements(
               selectedMovements?.map(
                 (movement) =>
                   ({
                     ...movement,
-                    categoryId: categoryId ?? movement.attributes.categoryId,
-                    type: type ?? movement.attributes.type,
+                    categoryId: categoryId ?? movement.categoryId,
+                    category: categories?.find((c) => movement.categoryId === c.id),
+                    type: type ?? movement.type,
                   }) as Movement,
               ) ?? [],
             )

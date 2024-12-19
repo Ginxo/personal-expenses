@@ -1,8 +1,6 @@
 type User = {
   id: string;
-  attributes: {
-    email: string;
-  };
+  email: string;
 };
 
 export { User };

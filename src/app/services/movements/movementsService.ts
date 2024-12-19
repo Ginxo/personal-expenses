@@ -9,7 +9,7 @@ const getMovements = (queryParams: MovementsQuery) => {
   const categoriesFilter = categories?.length ? { categories: categories?.join(',') } : {};
   const typesFilter = types?.length ? { types: types?.join(',') } : {};
   return apiRequest.get<MovementList>(
-    `/movement?${stringify({ ...categoriesFilter, ...typesFilter, ...rest }, { encode: false, indices: false })}`,
+    `/movements?${stringify({ ...categoriesFilter, ...typesFilter, ...rest }, { encode: false, indices: false })}`,
     {
       headers: {
         Accept: 'application/json',
@@ -18,12 +18,12 @@ const getMovements = (queryParams: MovementsQuery) => {
   );
 };
 
-const postMovement = (movement: Partial<Movement>) => apiRequest.post<Movement>('/movement', movement);
+const postMovement = (movement: Partial<Movement>) => apiRequest.post<Movement>('/movements', movement);
 
-const deleteMovement = (id: string) => apiRequest.delete(`/movement/${id}`);
+const deleteMovement = (id: string) => apiRequest.delete(`/movements/${id}`);
 
-const patchMovements = (movements: Movement[]) => apiRequest.patch<{ status: number }>('/movement', movements);
+const patchMovements = (movements: Movement[]) => apiRequest.patch<{ status: number }>('/movements', movements);
 
-const bulkMovements = (movements: Movement[]) => apiRequest.post<MovementList>('/bulk/movements', movements);
+const bulkMovements = (movements: Movement[]) => apiRequest.post<MovementList>('/movements/bulk', movements);
 
 export { getMovements, postMovement, deleteMovement, patchMovements, bulkMovements };

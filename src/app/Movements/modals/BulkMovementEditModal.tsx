@@ -18,7 +18,7 @@ import React from 'react';
 type BulkMovementEditModalProps = {
   numberOfSelectedMovements: number;
   categories?: Category[];
-  onSubmitCallback: ({ categoryId, type }: Partial<Pick<Movement['attributes'], 'categoryId' | 'type'>>) => void;
+  onSubmitCallback: ({ categoryId, type }: Partial<Pick<Movement, 'categoryId' | 'type'>>) => void;
   onCloseCallback: () => void;
 };
 const BulkMovementEditModal = ({
@@ -28,7 +28,7 @@ const BulkMovementEditModal = ({
   onCloseCallback,
 }: BulkMovementEditModalProps) => {
   const [selectedCategoryId, setSelectedCategoryId] = React.useState<string | undefined>(categories?.[0]?.id ?? '');
-  const [selectedType, setSelectedType] = React.useState<Movement['attributes']['type']>(MovementTypes[0]);
+  const [selectedType, setSelectedType] = React.useState<Movement['type']>(MovementTypes[0]);
   return (
     <Modal
       isOpen
@@ -52,7 +52,7 @@ const BulkMovementEditModal = ({
             ouiaId="CategoryFormSelect"
           >
             {categories?.map((category, index) => (
-              <FormSelectOption key={index} value={category.id} label={category.attributes.name} />
+              <FormSelectOption key={index} value={category.id} label={category.name} />
             ))}
           </FormSelect>
         </FormGroup>
@@ -60,7 +60,7 @@ const BulkMovementEditModal = ({
         <FormGroup label="Typo" fieldId="tipo">
           <FormSelect
             value={selectedType}
-            onChange={(_e, value) => setSelectedType(value as Movement['attributes']['type'])}
+            onChange={(_e, value) => setSelectedType(value as Movement['type'])}
             aria-label="Type FormSelect Input"
             ouiaId="TypeFormSelect"
           >

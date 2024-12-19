@@ -8,7 +8,7 @@ type MovementsQuery = {
   name?: string;
   amount?: number;
   categories?: string[];
-  types?: Movement['attributes']['type'][];
+  types?: Movement['type'][];
 } & Pagination &
   Sorting;
 

@@ -1,7 +1,7 @@
 import type { AxiosInstance } from 'axios';
 import axios, { InternalAxiosRequestConfig, RawAxiosRequestConfig } from 'axios';
 
-const getBaseUrl = () => 'http://localhost:3000/api';
+const getBaseUrl = () => 'http://localhost:3000/api/v1';
 
 export const authInterceptor = (client: AxiosInstance): AxiosInstance => {
   client.interceptors.request.use(async (cfg) => {

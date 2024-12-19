@@ -1,9 +1,7 @@
 type Category = {
   id: string;
   userId: string;
-  attributes: {
-    name: string;
-  };
+  name: string;
 };
 
 export { Category };
