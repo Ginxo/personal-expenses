@@ -5,6 +5,7 @@ import { MovementsQuery } from '@app/model/query/MovementsQuery';
 import { useFetchCategories } from '@app/queries/categories/useFetchCategories';
 import { useBulkMovement } from '@app/queries/movements/useBulkMovement';
 import { useDeleteMovement } from '@app/queries/movements/useDeleteMovement';
+import { useDeleteMovements } from '@app/queries/movements/useDeleteMovements';
 import { useFetchMovements } from '@app/queries/movements/useFetchMovements';
 import { usePatchMovements } from '@app/queries/movements/usePatchMovements';
 import { usePostMovement } from '@app/queries/movements/usePostMovement';
@@ -32,6 +33,7 @@ const Dashboard: React.FunctionComponent = () => {
   const bulkMovements = useBulkMovement('dashboard');
   const postMovement = usePostMovement('dashboard');
   const deleteMovement = useDeleteMovement('dashboard');
+  const deleteMovements = useDeleteMovements('dashboard');
 
   return (
     <PageSection hasBodyWrapper={false}>
@@ -55,6 +57,7 @@ const Dashboard: React.FunctionComponent = () => {
         patchMovements={(movements: Movement[]) => patchMovements.mutate(movements)}
         postMovement={(movement: Partial<Movement>) => postMovement.mutate(movement)}
         deleteMovement={(id: string) => deleteMovement.mutate(id)}
+        deleteMovements={(movements: Movement[]) => deleteMovements.mutate(movements.map((m) => m.id))}
         bulkMovements={(movements: Movement[]) => bulkMovements.mutate(movements)}
       />
     </PageSection>

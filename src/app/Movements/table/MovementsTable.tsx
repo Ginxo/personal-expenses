@@ -12,6 +12,8 @@ import {
   SelectList,
   SelectOption,
   Timestamp,
+  ToolbarGroup,
+  ToolbarItem,
   Tooltip,
 } from '@patternfly/react-core';
 import { MinusCircleIcon, PencilAltIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons';
@@ -39,6 +41,7 @@ type MovementsTableProps = {
   patchMovements: (movements: Movement[]) => void;
   postMovement: (movement: Partial<Movement>) => void;
   deleteMovement: (id: string) => void;
+  deleteMovements: (movements: Movement[]) => void;
   bulkMovements: (movements: Movement[]) => void;
 };
 
@@ -56,6 +59,7 @@ const MovementsTable = ({
   patchMovements,
   postMovement,
   deleteMovement,
+  deleteMovements,
   bulkMovements,
 }: MovementsTableProps) => {
   const [activeSortIndex, setActiveSortIndex] = React.useState<number>();
@@ -189,15 +193,30 @@ const MovementsTable = ({
                       <Th sort={getSortParams(2, 'amount')}>Importe</Th>
                       <Th sort={getSortParams(3, 'category')}>Categoría</Th>
                       <Th className="pf-v6-u-text-align-end" screenReaderText="actions">
-                        <Tooltip content="Editar movimiento/s">
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            isDisabled={!isAnyRowSelected}
-                            onClick={() => setIsBulkMovementModalOpen(true)}
-                            icon={<PencilAltIcon />}
-                          />
-                        </Tooltip>
+                        <ToolbarGroup variant="action-group">
+                          <ToolbarItem>
+                            <Tooltip content="Editar movimiento/s">
+                              <Button
+                                variant="primary"
+                                size="sm"
+                                isDisabled={!isAnyRowSelected}
+                                onClick={() => setIsBulkMovementModalOpen(true)}
+                                icon={<PencilAltIcon />}
+                              />
+                            </Tooltip>
+                          </ToolbarItem>
+                          <ToolbarItem>
+                            <Tooltip content="Borrar movimiento/s">
+                              <Button
+                                variant="primary"
+                                size="sm"
+                                isDisabled={!isAnyRowSelected}
+                                onClick={() => deleteMovements(selectedMovements)}
+                                icon={<TrashIcon />}
+                              />
+                            </Tooltip>
+                          </ToolbarItem>
+                        </ToolbarGroup>
                       </Th>
                     </Tr>
                   </Thead>

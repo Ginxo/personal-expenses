@@ -15,6 +15,7 @@ import {
   ModalVariant,
   TextInput,
 } from '@patternfly/react-core';
+import { MovementType } from '@prisma/client';
 import dayjs from 'dayjs';
 import React from 'react';
 
@@ -63,7 +64,7 @@ const CreateEditMovementModal = ({
               })
             }
             value={dayjs.utc(movement?.date).format('YYYY-MM-DD')}
-            aria-label='date'
+            aria-label="date"
           />
         </FormGroup>
         <br />
@@ -73,7 +74,7 @@ const CreateEditMovementModal = ({
             value={movementState.name}
             placeholder="Concepto"
             onChange={(_event, name) => setMovementState({ ...movementState, name })}
-            aria-label='name'
+            aria-label="name"
           />
         </FormGroup>
         <br />
@@ -83,7 +84,7 @@ const CreateEditMovementModal = ({
             value={movementState.description}
             placeholder="Descripción"
             onChange={(_event, description) => setMovementState({ ...movementState, description })}
-            aria-label='description'
+            aria-label="description"
           />
         </FormGroup>
         <br />
@@ -92,9 +93,11 @@ const CreateEditMovementModal = ({
             type="number"
             value={movementState.amount}
             placeholder="Importe"
-            onChange={(_event, amount) => setMovementState({ ...movementState, amount: +amount })}
+            onChange={(_event, amount) =>
+              setMovementState({ ...movementState, amount: +amount, type: +amount >= 0 ? 'income' : 'expense' })
+            }
             aria-label="amount to insert"
-            min={0}
+            min={-100000}
             max={100000}
           />
         </FormGroup>

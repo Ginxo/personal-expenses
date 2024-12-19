@@ -91,10 +91,25 @@ const bulkMovements = async (req: Request, res: Response) => {
   }
 };
 
+const deleteMovements = async (req: Request, res: Response) => {
+  try {
+    const ids = req.body;
+    const deletedElements = await prisma.movement.deleteMany({
+      where: {
+        id: { in: ids },
+      },
+    });
+    res.status(200).json(deletedElements);
+  } catch (e) {
+    res.status(500).json({ error: e });
+  }
+};
+
 export default {
   createMovement,
   getMovements,
   deleteMovement,
+  deleteMovements,
   updateMovements,
   bulkMovements,
 };
