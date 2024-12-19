@@ -8,8 +8,9 @@ type BulkLoadMovementModalProps = {
   onSubmitCallback: (movements: Movement[]) => void;
   onCloseCallback: () => void;
   status: MutationStatus;
+  userId: string;
 };
-const BulkLoadMovementModal = ({ onSubmitCallback, onCloseCallback, status }: BulkLoadMovementModalProps) => {
+const BulkLoadMovementModal = ({ onSubmitCallback, onCloseCallback, status, userId }: BulkLoadMovementModalProps) => {
   const [content, setContent] = React.useState<string>('');
 
   React.useEffect(() => {
@@ -30,6 +31,8 @@ const BulkLoadMovementModal = ({ onSubmitCallback, onCloseCallback, status }: Bu
       <ModalHeader title="Carga Masiva" labelId="modal-with-dropdown" />
       <ModalBody id="modal-box-body-with-dropdown">
         <p>Haz una carga masiva de moviemiento, copiando y pegando el contenido de de un excel</p>
+        <p>Selecciona tres columnas:</p>
+        <p>Fecha | Descripción | Importe</p>
         <br />
         <TextArea
           value={content}
@@ -43,7 +46,7 @@ const BulkLoadMovementModal = ({ onSubmitCallback, onCloseCallback, status }: Bu
         <Button
           key="confirm"
           variant="primary"
-          onClick={() => onSubmitCallback(excelBulkTreatment(content))}
+          onClick={() => onSubmitCallback(excelBulkTreatment(content, userId))}
           isLoading={status === 'pending'}
           isDisabled={status === 'pending' || content.trim().length === 0}
         >

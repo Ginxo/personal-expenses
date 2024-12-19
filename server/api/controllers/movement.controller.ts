@@ -84,9 +84,10 @@ const updateMovements = async (req: Request, res: Response) => {
 
 const bulkMovements = async (req: Request, res: Response) => {
   try {
-    const newEntries = await prisma.movement.createMany(req.body);
+    const newEntries = await prisma.movement.createMany({ data: req.body });
     res.status(200).json(newEntries);
   } catch (e) {
+    console.error('[BULK]', req.body, e);
     res.status(500).json({ error: e });
   }
 };

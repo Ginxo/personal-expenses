@@ -28,7 +28,7 @@ import { MovementsTableToolbar } from './MovementsTableToolbar';
 import { User } from '@app/model/User';
 
 type MovementsTableProps = {
-  user?: User;
+  user: User;
   movements?: Movement[];
   categories?: Category[];
   total?: number;
@@ -211,7 +211,10 @@ const MovementsTable = ({
                                 variant="primary"
                                 size="sm"
                                 isDisabled={!isAnyRowSelected}
-                                onClick={() => deleteMovements(selectedMovements)}
+                                onClick={() => {
+                                  deleteMovements(selectedMovements);
+                                  setSelectedMovements([]);
+                                }}
                                 icon={<TrashIcon />}
                               />
                             </Tooltip>
@@ -298,7 +301,7 @@ const MovementsTable = ({
                                 style={{ width: '190px' }}
                                 isDisabled={isUpdateDisabled}
                               >
-                                {movement.category.name.toUpperCase()}
+                                {movement.category ? movement.category.name.toUpperCase() : 'NO SELECCIONADA'}
                               </MenuToggle>
                             )}
                           >
@@ -347,6 +350,7 @@ const MovementsTable = ({
           onSubmitCallback={bulkMovements}
           onCloseCallback={() => setIsBulkLoadModalOpen(false)}
           status={bulkMovementsStatus}
+          userId={user.id}
         />
       ) : null}
       {isBulkMovementEditModalOpen ? (

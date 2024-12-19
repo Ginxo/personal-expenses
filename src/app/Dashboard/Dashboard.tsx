@@ -41,7 +41,7 @@ const Dashboard: React.FunctionComponent = () => {
         Dashboard
       </Title>
       <MovementsTable
-        user={user}
+        user={user!}
         movements={fetchMovements.data?.data}
         categories={fetchCategories.data?.data}
         total={fetchMovements.data?.meta.total}

@@ -14,7 +14,7 @@ export const useFetchMovements = (baseKey: string, query: MovementsQuery) => {
   const userId: string = user?.id as string;
 
   const { data, error, dataUpdatedAt, status, refetch, isRefetching } = useQuery({
-    queryKey: movementsKeys.paginate(baseKey),
+    queryKey: movementsKeys.paginate(baseKey, query),
     queryFn: () => getMovements(userId, query),
     enabled: !!userId,
     retry: false,

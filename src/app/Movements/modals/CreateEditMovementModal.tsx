@@ -15,7 +15,6 @@ import {
   ModalVariant,
   TextInput,
 } from '@patternfly/react-core';
-import { MovementType } from '@prisma/client';
 import dayjs from 'dayjs';
 import React from 'react';
 

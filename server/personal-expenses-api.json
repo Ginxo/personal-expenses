@@ -4117,7 +4117,8 @@
                 "type": "string"
               },
               "description": {
-                "type": "string"
+                "type": "string",
+                "nullable": true
               },
               "amount": {
                 "oneOf": [
@@ -4133,7 +4134,8 @@
                 "$ref": "#/components/schemas/MovementType"
               },
               "categoryId": {
-                "type": "string"
+                "type": "string",
+                "nullable": true
               },
               "userId": {
                 "type": "string"
@@ -4144,7 +4146,12 @@
             "type": "object",
             "properties": {
               "category": {
-                "$ref": "#/components/schemas/_toOneRelationshipWithLinks"
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/_toOneRelationshipWithLinks"
+                  }
+                ],
+                "nullable": true
               },
               "user": {
                 "$ref": "#/components/schemas/_toOneRelationshipWithLinks"
@@ -4175,7 +4182,6 @@
                 "type": "object",
                 "required": [
                   "name",
-                  "description",
                   "amount"
                 ],
                 "properties": {
@@ -4187,7 +4193,8 @@
                     "type": "string"
                   },
                   "description": {
-                    "type": "string"
+                    "type": "string",
+                    "nullable": true
                   },
                   "amount": {
                     "oneOf": [
@@ -4208,7 +4215,12 @@
                 "type": "object",
                 "properties": {
                   "category": {
-                    "$ref": "#/components/schemas/_toOneRelationship"
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/_toOneRelationship"
+                      }
+                    ],
+                    "nullable": true
                   },
                   "user": {
                     "$ref": "#/components/schemas/_toOneRelationship"
@@ -4255,7 +4267,8 @@
                     "type": "string"
                   },
                   "description": {
-                    "type": "string"
+                    "type": "string",
+                    "nullable": true
                   },
                   "amount": {
                     "oneOf": [
@@ -4276,7 +4289,12 @@
                 "type": "object",
                 "properties": {
                   "category": {
-                    "$ref": "#/components/schemas/_toOneRelationship"
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/_toOneRelationship"
+                      }
+                    ],
+                    "nullable": true
                   },
                   "user": {
                     "$ref": "#/components/schemas/_toOneRelationship"

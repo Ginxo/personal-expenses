@@ -34,12 +34,12 @@ model Movement {
     id String @id @default(cuid())
     date DateTime @default(now())
     name String
-    description String
+    description String?
     amount Decimal
     type MovementType @default(expense)
-    category Category @relation(fields: [categoryId], references: [id])
+    category Category? @relation(fields: [categoryId], references: [id])
     user User @relation(fields: [userId], references: [id])
-    categoryId String
+    categoryId String?
     userId String
 }
 
