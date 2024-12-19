@@ -13,7 +13,7 @@ const excelBulkTreatment = (content: string, userId: string): Movement[] =>
           date: dayjs(lineArr[0], 'DD/MM/YYYY').toISOString(),
           name: lineArr[1],
           amount: parseFloat(lineArr[2].replace(/,/g, '')),
-          type: +lineArr[2] >= 0 ? 'income' : 'expense',
+          type: parseFloat(lineArr[2].replace(/,/g, '')) >= 0 ? 'income' : 'expense',
           userId,
         } as Movement,
       ],

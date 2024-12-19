@@ -1,8 +1,11 @@
 import { Category } from '@app/model/Category';
 import { Movement } from '@app/model/Movement';
 import { MovementsQuery } from '@app/model/query/MovementsQuery';
+import { User } from '@app/model/User';
 import {
   Button,
+  Flex,
+  FlexItem,
   Icon,
   MenuToggle,
   MenuToggleElement,
@@ -11,12 +14,13 @@ import {
   Select,
   SelectList,
   SelectOption,
+  TextInput,
   Timestamp,
   ToolbarGroup,
   ToolbarItem,
   Tooltip,
 } from '@patternfly/react-core';
-import { MinusCircleIcon, PencilAltIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons';
+import { CheckCircleIcon, MinusCircleIcon, PencilAltIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons';
 import { Table, TableVariant, Tbody, Td, Th, ThProps, Thead, Tr } from '@patternfly/react-table';
 import { MutationStatus, QueryStatus } from '@tanstack/react-query';
 import React, { useMemo } from 'react';
@@ -25,7 +29,6 @@ import { BulkMovementEditModal } from '../modals/BulkMovementEditModal';
 import { CreateEditMovementModal } from '../modals/CreateEditMovementModal';
 import { MovementsTableSkeleton } from './MovementsTableSkeleton';
 import { MovementsTableToolbar } from './MovementsTableToolbar';
-import { User } from '@app/model/User';
 
 type MovementsTableProps = {
   user: User;
@@ -35,15 +38,18 @@ type MovementsTableProps = {
   queryStatus: QueryStatus;
   patchStatus: MutationStatus;
   bulkMovementsStatus: MutationStatus;
+  postCategoryStatus: MutationStatus;
   movementsQuery: MovementsQuery;
   queryChangeCallback?: (query: MovementsQuery) => void;
   refetchMovementsCallback: () => void;
   patchMovements: (movements: Movement[]) => void;
   postMovement: (movement: Partial<Movement>) => void;
+  postCategory: (category: Partial<Category>) => void;
   deleteMovement: (id: string) => void;
   deleteMovements: (movements: Movement[]) => void;
   bulkMovements: (movements: Movement[]) => void;
   invalidateBulkMovements: () => void;
+  newCategory?: Category;
 };
 
 const MovementsTable = ({
@@ -54,15 +60,18 @@ const MovementsTable = ({
   queryStatus,
   patchStatus,
   bulkMovementsStatus,
+  postCategoryStatus,
   movementsQuery,
   queryChangeCallback,
   refetchMovementsCallback,
   patchMovements,
   postMovement,
+  postCategory,
   deleteMovement,
   deleteMovements,
   bulkMovements,
   invalidateBulkMovements,
+  newCategory,
 }: MovementsTableProps) => {
   const [activeSortIndex, setActiveSortIndex] = React.useState<number>();
   const [activeSortDirection, setActiveSortDirection] = React.useState<'asc' | 'desc'>();
@@ -79,6 +88,28 @@ const MovementsTable = ({
   const [isCreateMovementModalOpen, setIsCreateMovementModalOpen] = React.useState(false);
 
   const [openedCategories, setOpenedCategories] = React.useState<{ [id: string]: boolean }>();
+  const [newCategoryName, setNewCategoryName] = React.useState('');
+  const [filteredCategories, setFilteredCategories] = React.useState(categories);
+  const [movementToUpdate, setMovementToUpdate] = React.useState<Movement>();
+
+  React.useEffect(() => {
+    if (newCategory && movementToUpdate) {
+      patchMovements([
+        {
+          ...movementToUpdate,
+          categoryId: newCategory.id,
+          category: newCategory,
+        },
+      ]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newCategory]);
+
+  React.useEffect(() => {
+    if (categories?.length) {
+      setFilteredCategories(categories);
+    }
+  }, [categories]);
 
   const isUpdateDisabled = useMemo(() => ![queryStatus, patchStatus].includes('success'), [patchStatus, queryStatus]);
 
@@ -158,6 +189,14 @@ const MovementsTable = ({
   };
 
   const selectAllRepos = (isSelecting = true) => setSelectedMovements(isSelecting && movements ? movements : []);
+
+  const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>, movement: Movement) => {
+    switch (event.key) {
+      case 'Enter':
+        setMovementToUpdate(movement);
+        postCategory({ name: newCategoryName, userId: user.id });
+    }
+  };
 
   return (
     <>
@@ -283,9 +322,13 @@ const MovementsTable = ({
                                 },
                               ]);
                             }}
-                            onOpenChange={(nextOpen: boolean) =>
-                              setOpenedCategories({ ...openedCategories, [movement.id]: nextOpen })
-                            }
+                            onOpenChange={(nextOpen: boolean) => {
+                              setOpenedCategories({ ...openedCategories, [movement.id]: nextOpen });
+                              if (!nextOpen) {
+                                setFilteredCategories(categories);
+                                setNewCategoryName('');
+                              }
+                            }}
                             toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
                               <MenuToggle
                                 variant="plainText"
@@ -308,7 +351,43 @@ const MovementsTable = ({
                             )}
                           >
                             <SelectList>
-                              {categories?.map((category) => (
+                              <Flex style={{ padding: '1.5rem' }}>
+                                <FlexItem>
+                                  <TextInput
+                                    type="text"
+                                    value={newCategoryName}
+                                    placeholder={
+                                      newCategoryName.trim().length === 0 || filteredCategories?.length
+                                        ? 'Filtrar Categorías'
+                                        : 'Nueva Categoría'
+                                    }
+                                    onChange={(_event, name) => {
+                                      setNewCategoryName(name);
+                                      setFilteredCategories(
+                                        categories?.filter((c) =>
+                                          c.name.toLocaleLowerCase().includes(name.toLocaleLowerCase()),
+                                        ),
+                                      );
+                                    }}
+                                    aria-label="name"
+                                    isDisabled={[postCategoryStatus, patchStatus].includes('pending')}
+                                    onKeyDown={(event) => onInputKeyDown(event, movement)}
+                                  />
+                                </FlexItem>
+                                <FlexItem>
+                                  <Button
+                                    variant="plain"
+                                    aria-label="Action"
+                                    icon={<CheckCircleIcon />}
+                                    isDisabled={[postCategoryStatus, patchStatus].includes('pending')}
+                                    onClick={() => {
+                                      setMovementToUpdate(movement);
+                                      postCategory({ name: newCategoryName, userId: user.id });
+                                    }}
+                                  />
+                                </FlexItem>
+                              </Flex>
+                              {filteredCategories?.map((category) => (
                                 <SelectOption
                                   isDisabled={isUpdateDisabled || category.id === movement.categoryId}
                                   key={category.id}

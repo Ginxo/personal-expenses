@@ -2,6 +2,19 @@ import { Request, Response } from 'express';
 import { prisma } from '../server';
 import { queryToPagination } from './queryToPagination';
 
+const createCategory = async (req: Request, res: Response) => {
+  try {
+    const { name, userId } = req.body;
+    const newEntry = await prisma.category.create({
+      data: { name, userId },
+    });
+    res.status(200).json(newEntry);
+  } catch (e) {
+    console.error('[CREATE]', e);
+    res.status(500).json({ error: e });
+  }
+};
+
 const getCategories = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
@@ -30,4 +43,5 @@ const getCategories = async (req: Request, res: Response) => {
 
 export default {
   getCategories,
+  createCategory,
 };
