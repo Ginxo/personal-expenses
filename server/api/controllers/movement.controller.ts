@@ -16,7 +16,7 @@ const createMovement = async (req: Request, res: Response) => {
 
 const getMovements = async (req: Request, res: Response) => {
   try {
-    const [movements, count] = await prisma.$transaction([
+    const [data, total] = await prisma.$transaction([
       prisma.movement.findMany({
         include: {
           user: true,
@@ -28,8 +28,8 @@ const getMovements = async (req: Request, res: Response) => {
     ]);
 
     res.status(200).json({
-      data: movements,
-      meta: { total: count },
+      data,
+      meta: { total },
     });
   } catch (e) {
     res.status(500).json({ error: e });
@@ -38,22 +38,23 @@ const getMovements = async (req: Request, res: Response) => {
 
 const deleteMovement = async (req: Request, res: Response) => {
   try {
-    const { id } = req.body;
-    const deletedBlogPost = await prisma.movement.delete({
+    const id = req.params.id;
+    const element = await prisma.movement.delete({
       where: {
         id,
       },
     });
-    res.status(200).json(deletedBlogPost);
+    res.status(200).json(element);
   } catch (e) {
+    console.error(`[DELETE] id: ${req.params.id}`, e);
     res.status(500).json({ error: e });
   }
 };
 
 const updateMovements = async (req: Request, res: Response) => {
   try {
-    const updatedBlogPost = await prisma.movement.updateMany(req.body);
-    res.status(202).json(updatedBlogPost);
+    const updated = await prisma.movement.updateMany(req.body);
+    res.status(202).json(updated);
   } catch (e) {
     res.status(500).json({ error: e });
   }
