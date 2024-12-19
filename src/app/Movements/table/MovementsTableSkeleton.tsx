@@ -10,14 +10,14 @@ const MovementsTableSkeleton = ({ size }: MovementsTableSkeletonProps) => (
   <Table aria-label="Skeletong Sortable table for movements" variant={TableVariant.compact}>
     <Thead>
       <Tr>
-        <Th width={10}>
+        <Th width={10} screenReaderText="selector">
           <Skeleton />
         </Th>
         <Th>Fecha</Th>
         <Th>Concepto</Th>
         <Th>Importe</Th>
         <Th>Categoría</Th>
-        <Th></Th>
+        <Th screenReaderText="actions"></Th>
       </Tr>
     </Thead>
     <Tbody>

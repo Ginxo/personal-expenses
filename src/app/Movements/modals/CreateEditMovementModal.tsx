@@ -1,6 +1,7 @@
 import { Category } from '@app/model/Category';
 import { Movement } from '@app/model/Movement';
 import { MovementTypes } from '@app/model/MovementTypes';
+import { User } from '@app/model/User';
 import {
   Button,
   DatePicker,
@@ -18,14 +19,16 @@ import dayjs from 'dayjs';
 import React from 'react';
 
 type CreateEditMovementModalProps = {
+  user: User;
   movement?: Partial<Movement>;
   categories?: Category[];
-  onSubmitCallback: (movement: Partial<Movement>) => void;
+  onSubmitCallback: (movement: Movement) => void;
   onCloseCallback: () => void;
 };
 const CreateEditMovementModal = ({
+  user,
   movement = {
-    date: new Date().getTime(),
+    date: dayjs.utc(new Date()).toISOString(),
     type: 'income',
   },
   categories,
@@ -33,7 +36,7 @@ const CreateEditMovementModal = ({
   onCloseCallback,
 }: CreateEditMovementModalProps) => {
   const [selectedCategoryId, setSelectedCategoryId] = React.useState<string | undefined>(categories?.[0]?.id ?? '');
-  const [movementState, setMovementState] = React.useState<Partial<Movement>>({ ...movement });
+  const [movementState, setMovementState] = React.useState<Movement>({ ...(movement as Movement) });
   return (
     <Modal
       isOpen
@@ -47,9 +50,20 @@ const CreateEditMovementModal = ({
       <ModalBody id="modal-box-body-with-dropdown">
         <FormGroup label="Fecha" fieldId="fecha">
           <DatePicker
-            onChange={(_, _value, date) => setMovementState({ ...movementState, date: date ? date.getTime() : 0 })}
-            onBlur={(_, _value, date) => setMovementState({ ...movementState, date: date ? date.getTime() : 0 })}
-            value={dayjs.utc(movement.date).format('YYYY-MM-DD')}
+            onChange={(_, _value, date) =>
+              setMovementState({
+                ...movementState,
+                date: date ? dayjs.utc(date).toISOString() : '',
+              })
+            }
+            onBlur={(_, _value, date) =>
+              setMovementState({
+                ...movementState,
+                date: date ? dayjs.utc(date).toISOString() : '',
+              })
+            }
+            value={dayjs.utc(movement?.date).format('YYYY-MM-DD')}
+            aria-label="date"
           />
         </FormGroup>
         <br />
@@ -59,6 +73,7 @@ const CreateEditMovementModal = ({
             value={movementState.name}
             placeholder="Concepto"
             onChange={(_event, name) => setMovementState({ ...movementState, name })}
+            aria-label="name"
           />
         </FormGroup>
         <br />
@@ -68,6 +83,7 @@ const CreateEditMovementModal = ({
             value={movementState.description}
             placeholder="Descripción"
             onChange={(_event, description) => setMovementState({ ...movementState, description })}
+            aria-label="description"
           />
         </FormGroup>
         <br />
@@ -76,9 +92,11 @@ const CreateEditMovementModal = ({
             type="number"
             value={movementState.amount}
             placeholder="Importe"
-            onChange={(_event, amount) => setMovementState({ ...movementState, amount: +amount })}
+            onChange={(_event, amount) =>
+              setMovementState({ ...movementState, amount: +amount, type: +amount >= 0 ? 'income' : 'expense' })
+            }
             aria-label="amount to insert"
-            min={0}
+            min={-100000}
             max={100000}
           />
         </FormGroup>
@@ -99,7 +117,12 @@ const CreateEditMovementModal = ({
         <FormGroup label="Typo" fieldId="tipo">
           <FormSelect
             value={movementState.type}
-            onChange={(_e, value) => setMovementState({ ...movementState, type: value as Movement['type'] })}
+            onChange={(_event, type) =>
+              setMovementState({
+                ...movementState,
+                type: type as Movement['type'],
+              })
+            }
             aria-label="Type FormSelect Input"
             ouiaId="TypeFormSelect"
           >
@@ -115,8 +138,16 @@ const CreateEditMovementModal = ({
           variant="primary"
           onClick={() => {
             const category = categories?.find((category) => category.id === selectedCategoryId);
-            onSubmitCallback({ ...movementState, category });
-            onCloseCallback();
+            if (category) {
+              onSubmitCallback({
+                ...movementState,
+                categoryId: category.id,
+                category,
+                user,
+                userId: user.id,
+              });
+              onCloseCallback();
+            }
           }}
         >
           Confirm

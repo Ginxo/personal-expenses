@@ -12,19 +12,23 @@ import {
   SelectList,
   SelectOption,
   Timestamp,
+  ToolbarGroup,
+  ToolbarItem,
   Tooltip,
 } from '@patternfly/react-core';
 import { MinusCircleIcon, PencilAltIcon, PlusCircleIcon, TrashIcon } from '@patternfly/react-icons';
 import { Table, TableVariant, Tbody, Td, Th, ThProps, Thead, Tr } from '@patternfly/react-table';
 import { MutationStatus, QueryStatus } from '@tanstack/react-query';
 import React, { useMemo } from 'react';
+import { BulkLoadMovementModal } from '../modals/BulkLoadMovementModal';
 import { BulkMovementEditModal } from '../modals/BulkMovementEditModal';
 import { CreateEditMovementModal } from '../modals/CreateEditMovementModal';
 import { MovementsTableSkeleton } from './MovementsTableSkeleton';
 import { MovementsTableToolbar } from './MovementsTableToolbar';
-import { BulkLoadMovementModal } from '../modals/BulkLoadMovementModal';
+import { User } from '@app/model/User';
 
 type MovementsTableProps = {
+  user: User;
   movements?: Movement[];
   categories?: Category[];
   total?: number;
@@ -37,10 +41,13 @@ type MovementsTableProps = {
   patchMovements: (movements: Movement[]) => void;
   postMovement: (movement: Partial<Movement>) => void;
   deleteMovement: (id: string) => void;
+  deleteMovements: (movements: Movement[]) => void;
   bulkMovements: (movements: Movement[]) => void;
+  invalidateBulkMovements: () => void;
 };
 
 const MovementsTable = ({
+  user,
   movements,
   categories,
   total,
@@ -53,7 +60,9 @@ const MovementsTable = ({
   patchMovements,
   postMovement,
   deleteMovement,
+  deleteMovements,
   bulkMovements,
+  invalidateBulkMovements,
 }: MovementsTableProps) => {
   const [activeSortIndex, setActiveSortIndex] = React.useState<number>();
   const [activeSortDirection, setActiveSortDirection] = React.useState<'asc' | 'desc'>();
@@ -179,21 +188,40 @@ const MovementsTable = ({
                           isSelected: areAllRowsSelected,
                         }}
                         aria-label="Row select"
+                        screenReaderText="selector"
                       />
                       <Th sort={getSortParams(0, 'date')}>Fecha</Th>
                       <Th sort={getSortParams(1, 'name')}>Concepto</Th>
                       <Th sort={getSortParams(2, 'amount')}>Importe</Th>
                       <Th sort={getSortParams(3, 'category')}>Categoría</Th>
-                      <Th className="pf-v6-u-text-align-end">
-                        <Tooltip content="Editar movimiento/s">
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            isDisabled={!isAnyRowSelected}
-                            onClick={() => setIsBulkMovementModalOpen(true)}
-                            icon={<PencilAltIcon />}
-                          />
-                        </Tooltip>
+                      <Th className="pf-v6-u-text-align-end" screenReaderText="actions">
+                        <ToolbarGroup variant="action-group">
+                          <ToolbarItem>
+                            <Tooltip content="Editar movimiento/s">
+                              <Button
+                                variant="primary"
+                                size="sm"
+                                isDisabled={!isAnyRowSelected}
+                                onClick={() => setIsBulkMovementModalOpen(true)}
+                                icon={<PencilAltIcon />}
+                              />
+                            </Tooltip>
+                          </ToolbarItem>
+                          <ToolbarItem>
+                            <Tooltip content="Borrar movimiento/s">
+                              <Button
+                                variant="primary"
+                                size="sm"
+                                isDisabled={!isAnyRowSelected}
+                                onClick={() => {
+                                  deleteMovements(selectedMovements);
+                                  setSelectedMovements([]);
+                                }}
+                                icon={<TrashIcon />}
+                              />
+                            </Tooltip>
+                          </ToolbarItem>
+                        </ToolbarGroup>
                       </Th>
                     </Tr>
                   </Thead>
@@ -245,13 +273,13 @@ const MovementsTable = ({
                             role="menu"
                             id="edit-categories-select"
                             isOpen={openedCategories?.[movement.id]}
-                            selected={movement.category}
+                            selected={movement.categoryId}
                             onSelect={(_e, categoryId) => {
                               setOpenedCategories({ ...openedCategories, [movement.id]: false });
                               patchMovements([
                                 {
                                   ...movement,
-                                  category: categories?.find((c) => c.id === categoryId) ?? movement.category,
+                                  categoryId: categories?.find((c) => c.id === categoryId)?.id ?? movement.categoryId,
                                 },
                               ]);
                             }}
@@ -275,14 +303,14 @@ const MovementsTable = ({
                                 style={{ width: '190px' }}
                                 isDisabled={isUpdateDisabled}
                               >
-                                {movement.category.name.toUpperCase()}
+                                {movement.category ? movement.category.name.toUpperCase() : 'NO SELECCIONADA'}
                               </MenuToggle>
                             )}
                           >
                             <SelectList>
                               {categories?.map((category) => (
                                 <SelectOption
-                                  isDisabled={isUpdateDisabled || category.id === movement.category.id}
+                                  isDisabled={isUpdateDisabled || category.id === movement.categoryId}
                                   key={category.id}
                                   value={category.id}
                                 >
@@ -322,19 +350,28 @@ const MovementsTable = ({
       {isBulkLoadModalOpen ? (
         <BulkLoadMovementModal
           onSubmitCallback={bulkMovements}
-          onCloseCallback={() => setIsBulkLoadModalOpen(false)}
+          onCloseCallback={() => {
+            setIsBulkLoadModalOpen(false);
+            invalidateBulkMovements();
+          }}
           status={bulkMovementsStatus}
+          userId={user.id}
         />
       ) : null}
       {isBulkMovementEditModalOpen ? (
         <BulkMovementEditModal
           numberOfSelectedMovements={selectedMovements.length}
           categories={categories}
-          onSubmitCallback={({ category, type }: Partial<Pick<Movement, 'category' | 'type'>>) =>
+          onSubmitCallback={({ categoryId, type }: Partial<Pick<Movement, 'categoryId' | 'type'>>) =>
             patchMovements(
               selectedMovements?.map(
                 (movement) =>
-                  ({ ...movement, category: category ?? movement.category, type: type ?? movement.type }) as Movement,
+                  ({
+                    ...movement,
+                    categoryId: categoryId ?? movement.categoryId,
+                    category: categories?.find((c) => movement.categoryId === c.id),
+                    type: type ?? movement.type,
+                  }) as Movement,
               ) ?? [],
             )
           }
@@ -342,8 +379,9 @@ const MovementsTable = ({
         />
       ) : null}
 
-      {isCreateMovementModalOpen ? (
+      {isCreateMovementModalOpen && user ? (
         <CreateEditMovementModal
+          user={user}
           categories={categories}
           onSubmitCallback={(movement: Partial<Movement>) => postMovement(movement)}
           onCloseCallback={() => setIsCreateMovementModalOpen(false)}

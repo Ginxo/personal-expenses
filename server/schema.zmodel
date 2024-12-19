@@ -1,0 +1,57 @@
+plugin openapi {
+    provider = '@zenstackhq/openapi'
+    prefix = '/api'
+    flavor = 'rest'
+    title = 'Personal Expenses API'
+    specVersion = '3.0.0'
+    version = '0.0.1'
+    description = 'The API for the personal expenses storage'
+    output = 'personal-expenses-api.json'
+    securitySchemes = { 
+        myBearer: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }
+    }
+}
+
+
+datasource db {
+    provider = "postgresql"
+    url = env("POSTGRES_PRISMA_URL")
+    directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model User {
+    id String @id @default(cuid())
+    email String @unique
+    movements Movement[]
+    categories Category[]
+}
+
+model Movement {
+    id String @id @default(cuid())
+    date DateTime @default(now())
+    name String
+    description String?
+    amount Decimal
+    type MovementType @default(expense)
+    category Category? @relation(fields: [categoryId], references: [id])
+    user User @relation(fields: [userId], references: [id])
+    categoryId String?
+    userId String
+}
+
+enum MovementType {
+  income
+  expense
+}
+
+model Category {
+    id String @id @default(cuid())
+    name String
+    user User @relation(fields: [userId], references: [id])
+    userId String
+    movements Movement[]
+}

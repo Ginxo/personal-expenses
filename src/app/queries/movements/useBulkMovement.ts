@@ -5,7 +5,7 @@ import { movementsKeys } from './movementsKeys';
 import { refetchMovements } from './useFetchMovements';
 
 export const useBulkMovement = (baseKey: string) => {
-  const { mutate, data, error, status } = useMutation({
+  const { mutate, data, error, status, reset } = useMutation({
     mutationKey: movementsKeys.bulk(baseKey),
     mutationFn: async (movements: Movement[]) => await bulkMovements(movements),
     onSuccess: () => refetchMovements(baseKey),
@@ -13,6 +13,7 @@ export const useBulkMovement = (baseKey: string) => {
 
   return {
     mutate,
+    reset,
     data,
     status,
     error,

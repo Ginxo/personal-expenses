@@ -1,24 +1,27 @@
 import { MovementsTable } from '@app/Movements/table/MovementsTable';
 import { Movement } from '@app/model/Movement';
+import { CategoriesQuery } from '@app/model/query/CategoriesQuery';
 import { MovementsQuery } from '@app/model/query/MovementsQuery';
-import { Pagination } from '@app/model/query/Pagination';
-import { Sorting } from '@app/model/query/Sorting';
 import { useFetchCategories } from '@app/queries/categories/useFetchCategories';
 import { useBulkMovement } from '@app/queries/movements/useBulkMovement';
 import { useDeleteMovement } from '@app/queries/movements/useDeleteMovement';
+import { useDeleteMovements } from '@app/queries/movements/useDeleteMovements';
 import { useFetchMovements } from '@app/queries/movements/useFetchMovements';
 import { usePatchMovements } from '@app/queries/movements/usePatchMovements';
 import { usePostMovement } from '@app/queries/movements/usePostMovement';
+import { useFetchUser } from '@app/queries/users/useFetchUser';
 import { PageSection, Title } from '@patternfly/react-core';
 import * as React from 'react';
 
 const Dashboard: React.FunctionComponent = () => {
+  const { user } = useFetchUser();
+
   const [movementsQuery, setMovementsQuery] = React.useState<MovementsQuery>({
     page: 1,
     size: 20,
     direction: 'asc',
   });
-  const [categoriesQuery] = React.useState<Pagination & Sorting>({
+  const [categoriesQuery] = React.useState<CategoriesQuery>({
     page: 1,
     size: 15,
     direction: 'asc',
@@ -30,6 +33,7 @@ const Dashboard: React.FunctionComponent = () => {
   const bulkMovements = useBulkMovement('dashboard');
   const postMovement = usePostMovement('dashboard');
   const deleteMovement = useDeleteMovement('dashboard');
+  const deleteMovements = useDeleteMovements('dashboard');
 
   return (
     <PageSection hasBodyWrapper={false}>
@@ -37,19 +41,25 @@ const Dashboard: React.FunctionComponent = () => {
         Dashboard
       </Title>
       <MovementsTable
-        movements={fetchMovements.data?.items}
-        categories={fetchCategories.data?.items}
-        total={fetchMovements.data?.total}
+        user={user!}
+        movements={fetchMovements.data?.data}
+        categories={fetchCategories.data?.data}
+        total={fetchMovements.data?.meta.total}
         queryStatus={fetchMovements.status}
         patchStatus={patchMovements.status}
         bulkMovementsStatus={bulkMovements.status}
         movementsQuery={movementsQuery}
         queryChangeCallback={setMovementsQuery}
-        refetchMovementsCallback={fetchMovements.refetch}
+        refetchMovementsCallback={() => {
+          fetchMovements.refetch();
+          fetchCategories.refetch();
+        }}
         patchMovements={(movements: Movement[]) => patchMovements.mutate(movements)}
         postMovement={(movement: Partial<Movement>) => postMovement.mutate(movement)}
         deleteMovement={(id: string) => deleteMovement.mutate(id)}
+        deleteMovements={(movements: Movement[]) => deleteMovements.mutate(movements.map((m) => m.id))}
         bulkMovements={(movements: Movement[]) => bulkMovements.mutate(movements)}
+        invalidateBulkMovements={async () => await bulkMovements.reset()}
       />
     </PageSection>
   );

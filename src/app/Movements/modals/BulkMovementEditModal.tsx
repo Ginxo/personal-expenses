@@ -18,7 +18,7 @@ import React from 'react';
 type BulkMovementEditModalProps = {
   numberOfSelectedMovements: number;
   categories?: Category[];
-  onSubmitCallback: ({ category, type }: Partial<Pick<Movement, 'category' | 'type'>>) => void;
+  onSubmitCallback: ({ categoryId, type }: Partial<Pick<Movement, 'categoryId' | 'type'>>) => void;
   onCloseCallback: () => void;
 };
 const BulkMovementEditModal = ({
@@ -76,7 +76,7 @@ const BulkMovementEditModal = ({
           variant="primary"
           onClick={() => {
             const selectedCategory = categories?.find((category) => category.id === selectedCategoryId);
-            onSubmitCallback({ category: selectedCategory, type: selectedType });
+            onSubmitCallback({ categoryId: selectedCategory?.id, type: selectedType });
             onCloseCallback();
           }}
         >
