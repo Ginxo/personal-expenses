@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { categoriesKeys } from './categoriesKeys';
 
 export const useFetchCategories = (baseKey: string, params: Pagination) => {
-  const { data, error, dataUpdatedAt, status, refetch } = useQuery({
+  const { data, error, dataUpdatedAt, status, refetch, isRefetching } = useQuery({
     queryKey: categoriesKeys.paginate(baseKey, params),
     queryFn: () => getCategories(params),
     retry: false,
@@ -14,7 +14,7 @@ export const useFetchCategories = (baseKey: string, params: Pagination) => {
     data: data?.data,
     error,
     dataUpdatedAt,
-    status,
+    status: isRefetching ? 'pending' : status,
     refetch,
   };
 };
