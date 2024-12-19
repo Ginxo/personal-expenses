@@ -182,12 +182,13 @@ const MovementsTable = ({
                           isSelected: areAllRowsSelected,
                         }}
                         aria-label="Row select"
+                        screenReaderText="selector"
                       />
                       <Th sort={getSortParams(0, 'date')}>Fecha</Th>
                       <Th sort={getSortParams(1, 'name')}>Concepto</Th>
                       <Th sort={getSortParams(2, 'amount')}>Importe</Th>
                       <Th sort={getSortParams(3, 'category')}>Categoría</Th>
-                      <Th className="pf-v6-u-text-align-end">
+                      <Th className="pf-v6-u-text-align-end" screenReaderText="actions">
                         <Tooltip content="Editar movimiento/s">
                           <Button
                             variant="primary"

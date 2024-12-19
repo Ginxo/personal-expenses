@@ -28,7 +28,7 @@ type CreateEditMovementModalProps = {
 const CreateEditMovementModal = ({
   user,
   movement = {
-    date: new Date().getTime(),
+    date: dayjs.utc(new Date()).toISOString(),
     type: 'income',
   },
   categories,
@@ -53,16 +53,17 @@ const CreateEditMovementModal = ({
             onChange={(_, _value, date) =>
               setMovementState({
                 ...movementState,
-                date: date ? date.getTime() : 0,
+                date: date ? dayjs.utc(date).toISOString() : '',
               })
             }
             onBlur={(_, _value, date) =>
               setMovementState({
                 ...movementState,
-                date: date ? date.getTime() : 0,
+                date: date ? dayjs.utc(date).toISOString() : '',
               })
             }
             value={dayjs.utc(movement?.date).format('YYYY-MM-DD')}
+            aria-label='date'
           />
         </FormGroup>
         <br />
@@ -72,6 +73,7 @@ const CreateEditMovementModal = ({
             value={movementState.name}
             placeholder="Concepto"
             onChange={(_event, name) => setMovementState({ ...movementState, name })}
+            aria-label='name'
           />
         </FormGroup>
         <br />
@@ -81,6 +83,7 @@ const CreateEditMovementModal = ({
             value={movementState.description}
             placeholder="Descripción"
             onChange={(_event, description) => setMovementState({ ...movementState, description })}
+            aria-label='description'
           />
         </FormGroup>
         <br />

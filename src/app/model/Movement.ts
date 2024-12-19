@@ -3,7 +3,7 @@ import { User } from './User';
 
 type Movement = {
   id: string;
-  date: number;
+  date: string;
   name: string;
   description?: string;
   amount: number;

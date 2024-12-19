@@ -6,6 +6,7 @@ import { queryClient } from '@app/queryClient';
 import { useFetchUser } from '../users/useFetchUser';
 
 export const refetchMovements = (baseKey: string) => {
+  console.log('REFETCH');
   queryClient.invalidateQueries({ queryKey: movementsKeys.paginate(baseKey) });
 };
 
