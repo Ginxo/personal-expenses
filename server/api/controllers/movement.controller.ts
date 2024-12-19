@@ -4,20 +4,26 @@ import { queryToPagination } from './queryToPagination';
 
 const createMovement = async (req: Request, res: Response) => {
   try {
-    const { date, name, description, amount, type, category, user } = req.body;
+    const { date, name, description, amount, type, category, categoryId, user, userId } = req.body;
     const newEntry = await prisma.movement.create({
-      data: { date, name, description, amount, type, category, user },
+      data: { date, name, description, amount, type, category, categoryId, user, userId },
     });
     res.status(200).json(newEntry);
   } catch (e) {
+    console.error('[CREATE]', e);
     res.status(500).json({ error: e });
   }
 };
 
 const getMovements = async (req: Request, res: Response) => {
   try {
+    const userId = req.params.userId;
+
     const [data, total] = await prisma.$transaction([
       prisma.movement.findMany({
+        where: {
+          userId,
+        },
         include: {
           user: true,
           category: true,

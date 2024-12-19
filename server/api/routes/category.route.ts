@@ -3,6 +3,6 @@ import Controller from '../controllers/category.controller';
 
 const router = express.Router();
 
-router.get('/', Controller.getCategories);
+router.get('/:userId', Controller.getCategories);
 
 export default router;

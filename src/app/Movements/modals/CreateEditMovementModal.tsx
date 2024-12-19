@@ -1,6 +1,7 @@
 import { Category } from '@app/model/Category';
 import { Movement } from '@app/model/Movement';
 import { MovementTypes } from '@app/model/MovementTypes';
+import { User } from '@app/model/User';
 import {
   Button,
   DatePicker,
@@ -18,12 +19,14 @@ import dayjs from 'dayjs';
 import React from 'react';
 
 type CreateEditMovementModalProps = {
+  user: User;
   movement?: Partial<Movement>;
   categories?: Category[];
   onSubmitCallback: (movement: Movement) => void;
   onCloseCallback: () => void;
 };
 const CreateEditMovementModal = ({
+  user,
   movement = {
     date: new Date().getTime(),
     type: 'income',
@@ -135,6 +138,8 @@ const CreateEditMovementModal = ({
                 ...movementState,
                 categoryId: category.id,
                 category,
+                user,
+                userId: user.id,
               });
               onCloseCallback();
             }

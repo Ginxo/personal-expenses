@@ -23,8 +23,10 @@ import { BulkMovementEditModal } from '../modals/BulkMovementEditModal';
 import { CreateEditMovementModal } from '../modals/CreateEditMovementModal';
 import { MovementsTableSkeleton } from './MovementsTableSkeleton';
 import { MovementsTableToolbar } from './MovementsTableToolbar';
+import { User } from '@app/model/User';
 
 type MovementsTableProps = {
+  user?: User;
   movements?: Movement[];
   categories?: Category[];
   total?: number;
@@ -41,6 +43,7 @@ type MovementsTableProps = {
 };
 
 const MovementsTable = ({
+  user,
   movements,
   categories,
   total,
@@ -347,8 +350,9 @@ const MovementsTable = ({
         />
       ) : null}
 
-      {isCreateMovementModalOpen ? (
+      {isCreateMovementModalOpen && user ? (
         <CreateEditMovementModal
+          user={user}
           categories={categories}
           onSubmitCallback={(movement: Partial<Movement>) => postMovement(movement)}
           onCloseCallback={() => setIsCreateMovementModalOpen(false)}

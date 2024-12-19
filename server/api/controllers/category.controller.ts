@@ -4,8 +4,13 @@ import { queryToPagination } from './queryToPagination';
 
 const getCategories = async (req: Request, res: Response) => {
   try {
+    const userId = req.params.userId;
+
     const [categories, count] = await prisma.$transaction([
       prisma.category.findMany({
+        where: {
+          userId,
+        },
         include: {
           user: true,
         },

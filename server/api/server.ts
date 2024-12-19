@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import MovementsRouter from './routes/movement.route';
 import CategoriesRouter from './routes/category.route';
+import UsersRouter from './routes/user.route';
 import cors from 'cors';
 
 export const prisma = new PrismaClient();
@@ -17,6 +18,7 @@ async function main() {
   // Register API routes
   app.use('/api/v1/movements', MovementsRouter);
   app.use('/api/v1/categories', CategoriesRouter);
+  app.use('/api/v1/users', UsersRouter);
 
   // Catch unregistered routes
   app.all('*', (req: Request, res: Response) => {

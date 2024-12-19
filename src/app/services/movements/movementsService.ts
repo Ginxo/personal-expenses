@@ -4,12 +4,12 @@ import apiRequest from '../apiRequest';
 import { MovementsQuery } from '@app/model/query/MovementsQuery';
 import { Movement } from '@app/model/Movement';
 
-const getMovements = (queryParams: MovementsQuery) => {
+const getMovements = (userId: string, queryParams: MovementsQuery) => {
   const { categories, types, ...rest } = queryParams;
   const categoriesFilter = categories?.length ? { categories: categories?.join(',') } : {};
   const typesFilter = types?.length ? { types: types?.join(',') } : {};
   return apiRequest.get<MovementList>(
-    `/movements?${stringify({ ...categoriesFilter, ...typesFilter, ...rest }, { encode: false, indices: false })}`,
+    `/movements/${userId}?${stringify({ ...categoriesFilter, ...typesFilter, ...rest }, { encode: false, indices: false })}`,
     {
       headers: {
         Accept: 'application/json',
