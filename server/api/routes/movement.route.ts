@@ -1,11 +1,11 @@
 import express from 'express';
-import MovementController from '../controllers/movement.controller';
+import Controller from '../controllers/movement.controller';
 
 const router = express.Router();
 
-router.get('/', MovementController.getMovements);
-router.delete('/:id', MovementController.deleteMovement);
-router.patch('/', MovementController.updateMovements);
-router.post('/bulk', MovementController.bulkMovements);
+router.get('/', Controller.getMovements);
+router.delete('/:id', Controller.deleteMovement);
+router.patch('/', Controller.updateMovements);
+router.post('/bulk', Controller.bulkMovements);
 
 export default router;

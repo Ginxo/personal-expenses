@@ -1,13 +1,14 @@
 import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import MovementsRouter from './routes/movement.route';
+import CategoriesRouter from './routes/category.route';
 import cors from 'cors';
 
 export const prisma = new PrismaClient();
 
 const app = express();
 
-const port = 8080;
+const port = 3000;
 
 async function main() {
   app.use(express.json());
@@ -15,6 +16,7 @@ async function main() {
 
   // Register API routes
   app.use('/api/v1/movements', MovementsRouter);
+  app.use('/api/v1/categories', CategoriesRouter);
 
   // Catch unregistered routes
   app.all('*', (req: Request, res: Response) => {

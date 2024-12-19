@@ -16,15 +16,21 @@ const createMovement = async (req: Request, res: Response) => {
 
 const getMovements = async (req: Request, res: Response) => {
   try {
-    res.status(200).json(
-      await prisma.movement.findMany({
+    const [movements, count] = await prisma.$transaction([
+      prisma.movement.findMany({
         include: {
           user: true,
           category: true,
         },
         ...queryToPagination(req.query),
       }),
-    );
+      prisma.movement.count(),
+    ]);
+
+    res.status(200).json({
+      data: movements,
+      meta: { total: count },
+    });
   } catch (e) {
     res.status(500).json({ error: e });
   }
