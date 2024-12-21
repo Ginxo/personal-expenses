@@ -24,7 +24,9 @@ const Dashboard: React.FunctionComponent = () => {
   });
   const [categoriesQuery] = React.useState<CategoriesQuery>({
     page: 1,
-    size: 15,
+    size: 50,
+    order_by: 'name',
+    direction: 'asc',
   });
 
   const fetchMovements = useFetchMovements('dashboard', movementsQuery);

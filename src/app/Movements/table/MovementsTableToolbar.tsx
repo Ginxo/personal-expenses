@@ -173,7 +173,7 @@ const MovementsTableToolbar = ({
                     value={category.id}
                     isSelected={selectedCategories.includes(category)}
                   >
-                    {category.name}
+                    {category.name.toUpperCase()}
                   </SelectOption>
                 ))}
               </SelectList>

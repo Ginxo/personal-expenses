@@ -52,7 +52,7 @@ const BulkMovementEditModal = ({
             ouiaId="CategoryFormSelect"
           >
             {categories?.map((category, index) => (
-              <FormSelectOption key={index} value={category.id} label={category.name} />
+              <FormSelectOption key={index} value={category.id} label={category.name.toUpperCase()} />
             ))}
           </FormSelect>
         </FormGroup>
@@ -65,7 +65,7 @@ const BulkMovementEditModal = ({
             ouiaId="TypeFormSelect"
           >
             {MovementTypes.map((category, index) => (
-              <FormSelectOption key={index} value={category} label={category} />
+              <FormSelectOption key={index} value={category} label={category.toUpperCase()} />
             ))}
           </FormSelect>
         </FormGroup>
