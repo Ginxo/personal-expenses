@@ -321,6 +321,7 @@ const MovementsTable = ({
                                   categoryId: categories?.find((c) => c.id === categoryId)?.id ?? movement.categoryId,
                                 },
                               ]);
+                              setNewCategoryName('');
                             }}
                             onOpenChange={(nextOpen: boolean) => {
                               setOpenedCategories({ ...openedCategories, [movement.id]: nextOpen });
@@ -383,6 +384,7 @@ const MovementsTable = ({
                                     onClick={() => {
                                       setMovementToUpdate(movement);
                                       postCategory({ name: newCategoryName, userId: user.id });
+                                      setNewCategoryName('');
                                     }}
                                   />
                                 </FlexItem>
@@ -393,7 +395,7 @@ const MovementsTable = ({
                                   key={category.id}
                                   value={category.id}
                                 >
-                                  {category.name}
+                                  {category.name.toUpperCase()}
                                 </SelectOption>
                               ))}
                             </SelectList>

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../server';
 import { queryToPagination } from './queryToPagination';
+import { queryToOrderBy } from './queryToOrderBy';
 
 const createCategory = async (req: Request, res: Response) => {
   try {
@@ -18,6 +19,7 @@ const createCategory = async (req: Request, res: Response) => {
 const getCategories = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
+    const { page, size, direction, order_by } = req.query;
 
     const [categories, count] = await prisma.$transaction([
       prisma.category.findMany({
@@ -27,7 +29,8 @@ const getCategories = async (req: Request, res: Response) => {
         include: {
           user: true,
         },
-        ...queryToPagination(req.query),
+        ...queryToPagination({ page, size }),
+        ...queryToOrderBy({ order_by, direction }),
       }),
       prisma.category.count(),
     ]);
