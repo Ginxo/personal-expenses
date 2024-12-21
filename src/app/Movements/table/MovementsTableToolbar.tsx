@@ -19,6 +19,7 @@ import {
   Tooltip,
 } from '@patternfly/react-core';
 import { PlusIcon, RedoIcon, TimesIcon, UploadIcon } from '@patternfly/react-icons';
+import dayjs from 'dayjs';
 import React from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
@@ -79,8 +80,8 @@ const MovementsTableToolbar = ({
         ...query,
         name: name && name.trim().length > 0 ? name.trim() : undefined,
         amount: amount && amount.trim().length > 0 ? +amount : undefined,
-        from: startDate.value,
-        to: endDate.value,
+        from: startDate.value ? dayjs(startDate.value, 'YYYY-MM-DD').toISOString() : undefined,
+        to: endDate.value ? dayjs(endDate.value, 'YYYY-MM-DD').toISOString() : undefined,
         categories: selectedCategories.length ? selectedCategories.map((e) => e.id) : undefined,
         types: selectedTypes.length ? selectedTypes : undefined,
       };

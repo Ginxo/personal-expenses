@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
 import { prisma } from '../server';
 import { queryToPagination } from './queryToPagination';
+import { queryToOrderBy } from './queryToOrderBy';
 
 const createMovement = async (req: Request, res: Response) => {
   try {
+    req.query;
     const { date, name, description, amount, type, categoryId, userId } = req.body;
     const newEntry = await prisma.movement.create({
       data: { date, name, description, amount, type, categoryId, userId },
@@ -18,17 +20,27 @@ const createMovement = async (req: Request, res: Response) => {
 const getMovements = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
+    const { page, size, direction, order_by, ...rest } = req.query;
+    const filter = {
+      name: rest.name ? { contains: rest.name, mode: 'insensitive' } : undefined,
+      amount: rest.amount ? { gt: rest.amount } : undefined,
+      categoryId: rest.categories ? { in: (rest.categories as string).split(',') } : undefined,
+      type: rest.types ? { in: (rest.types as string).split(',') } : undefined,
+      date: rest.from || rest.to ? { gte: rest.from, lte: rest.to } : undefined,
+    };
 
     const [data, total] = await prisma.$transaction([
       prisma.movement.findMany({
         where: {
           userId,
+          ...JSON.parse(JSON.stringify(filter)),
         },
         include: {
           user: true,
           category: true,
         },
-        ...queryToPagination(req.query),
+        ...queryToPagination({ page, size }),
+        ...queryToOrderBy({ order_by, direction }, { category: { name: direction as string } }),
       }),
       prisma.movement.count(),
     ]);
@@ -38,6 +50,7 @@ const getMovements = async (req: Request, res: Response) => {
       meta: { total },
     });
   } catch (e) {
+    console.log('[GET MOVEMENTS]', e);
     res.status(500).json({ error: e });
   }
 };

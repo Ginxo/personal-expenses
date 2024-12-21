@@ -121,9 +121,7 @@ const MovementsTable = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryState, queryChangeCallback]);
 
-  React.useEffect(() => {
-    setQueryState(movementsQuery);
-  }, [movementsQuery, setQueryState]);
+  React.useEffect(() => setQueryState(movementsQuery), [movementsQuery, setQueryState]);
 
   React.useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -202,7 +200,9 @@ const MovementsTable = ({
     <>
       <MovementsTableToolbar
         query={queryState}
-        queryChangeCallback={(query) => setQueryState({ ...queryState, ...query })}
+        queryChangeCallback={(query) => {
+          setQueryState({ ...queryState, ...query, page: 1 });
+        }}
         disabled={isUpdateDisabled}
         categories={categories}
         createMovementCallback={() => setIsCreateMovementModalOpen(true)}
