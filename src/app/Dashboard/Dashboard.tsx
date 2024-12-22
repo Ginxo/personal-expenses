@@ -1,3 +1,4 @@
+import { ComboChart } from '@app/Charts/ComboChart';
 import { MovementsTable } from '@app/Movements/table/MovementsTable';
 import { Category } from '@app/model/Category';
 import { Movement } from '@app/model/Movement';
@@ -9,6 +10,11 @@ import { useBulkMovement } from '@app/queries/movements/useBulkMovement';
 import { useDeleteMovement } from '@app/queries/movements/useDeleteMovement';
 import { useDeleteMovements } from '@app/queries/movements/useDeleteMovements';
 import { useFetchMovements } from '@app/queries/movements/useFetchMovements';
+import {
+  useFetchMovementsByCategory,
+  useFetchMovementsByCategory,
+  useFetchMovementsByCategory,
+} from '@app/queries/movements/useFetchMovementsByCategory';
 import { usePatchMovements } from '@app/queries/movements/usePatchMovements';
 import { usePostMovement } from '@app/queries/movements/usePostMovement';
 import { useFetchUser } from '@app/queries/users/useFetchUser';
@@ -29,6 +35,8 @@ const Dashboard: React.FunctionComponent = () => {
     direction: 'asc',
   });
 
+  const [movementsByCategoryNumberOfMonths, setMovementsByCategoryNumberOfMonths] = React.useState<number>(4);
+
   const fetchMovements = useFetchMovements('dashboard', movementsQuery);
   const fetchCategories = useFetchCategories('dashboard', categoriesQuery);
   const patchMovements = usePatchMovements('dashboard');
@@ -37,12 +45,24 @@ const Dashboard: React.FunctionComponent = () => {
   const postCategory = usePostCategory('dashboard');
   const deleteMovement = useDeleteMovement('dashboard');
   const deleteMovements = useDeleteMovements('dashboard');
+  const movementsByCategory = useFetchMovementsByCategory(
+    'dashboard',
+    movementsByCategoryNumberOfMonths,
+    movementsQuery,
+  );
 
   return (
     <PageSection hasBodyWrapper={false}>
       <Title headingLevel="h1" size="lg">
         Dashboard
       </Title>
+      <ComboChart
+        categorySumByMonth={movementsByCategory.data}
+        categoryList={fetchCategories.data}
+        numberOfMonths={movementsByCategoryNumberOfMonths}
+        numberOfMonthsCallback={setMovementsByCategoryNumberOfMonths}
+        categorySumByMonthStatus={movementsByCategory.status}
+      />
       <MovementsTable
         user={user!}
         movements={fetchMovements.data?.data}

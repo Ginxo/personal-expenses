@@ -119,6 +119,28 @@ const deleteMovements = async (req: Request, res: Response) => {
   }
 };
 
+const groupByCategories = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId;
+    const filter = {
+      date: req.query.from || req.query.to ? { gte: req.query.from, lte: req.query.to } : undefined,
+    };
+    const elements = await prisma.movement.groupBy({
+      where: {
+        userId,
+        ...JSON.parse(JSON.stringify(filter)),
+      },
+      by: ['categoryId'],
+      _sum: {
+        amount: true,
+      },
+    });
+    res.status(200).json(elements);
+  } catch (e) {
+    res.status(500).json({ error: e });
+  }
+};
+
 export default {
   createMovement,
   getMovements,
@@ -126,4 +148,5 @@ export default {
   deleteMovements,
   updateMovements,
   bulkMovements,
+  groupByCategories,
 };

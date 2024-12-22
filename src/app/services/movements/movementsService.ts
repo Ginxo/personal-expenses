@@ -1,8 +1,10 @@
+import { CategorySum } from '@app/model/CategorySum';
+import { Movement } from '@app/model/Movement';
 import { MovementList } from '@app/model/MovementList';
+import { MovementsByCategoryQuery } from '@app/model/query/MovementsByCategoryQuery';
+import { MovementsQuery } from '@app/model/query/MovementsQuery';
 import { stringify } from 'qs';
 import apiRequest from '../apiRequest';
-import { MovementsQuery } from '@app/model/query/MovementsQuery';
-import { Movement } from '@app/model/Movement';
 
 const getMovements = (userId: string, queryParams: MovementsQuery) => {
   const { categories, types, ...rest } = queryParams;
@@ -10,6 +12,19 @@ const getMovements = (userId: string, queryParams: MovementsQuery) => {
   const typesFilter = types?.length ? { types: types?.join(',') } : {};
   return apiRequest.get<MovementList>(
     `/movements/${userId}?${stringify({ ...categoriesFilter, ...typesFilter, ...rest }, { encode: false, indices: false })}`,
+    {
+      headers: {
+        Accept: 'application/json',
+      },
+    },
+  );
+};
+
+const getMovementsByCategory = (userId: string, queryParams: MovementsByCategoryQuery) => {
+  const { categories, ...rest } = queryParams;
+  const categoriesFilter = categories?.length ? { categories: categories?.join(',') } : {};
+  return apiRequest.get<CategorySum[]>(
+    `/movements/${userId}/group/category?${stringify({ ...categoriesFilter, ...rest }, { encode: false, indices: false })}`,
     {
       headers: {
         Accept: 'application/json',
@@ -28,4 +43,9 @@ const patchMovements = (movements: Movement[]) => apiRequest.patch<{ status: num
 
 const bulkMovements = (movements: Movement[]) => apiRequest.post<MovementList>('/movements/bulk', movements);
 
-export { getMovements, postMovement, deleteMovement, deleteMovements, patchMovements, bulkMovements };
+export {
+  bulkMovements, deleteMovement,
+  deleteMovements, getMovements,
+  getMovementsByCategory, patchMovements, postMovement
+};
+
