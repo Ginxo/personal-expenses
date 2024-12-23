@@ -57,7 +57,7 @@ const BulkMovementEditModal = ({
           </FormSelect>
         </FormGroup>
         <br />
-        <FormGroup label="Typo" fieldId="tipo">
+        <FormGroup label="Tipo" fieldId="tipo">
           <FormSelect
             value={selectedType}
             onChange={(_e, value) => setSelectedType(value as Movement['type'])}

@@ -16,12 +16,13 @@ import { MinusCircleIcon, PencilAltIcon, PlusCircleIcon, TrashIcon } from '@patt
 import { Table, TableVariant, Tbody, Td, Th, ThProps, Thead, Tr } from '@patternfly/react-table';
 import { MutationStatus, QueryStatus } from '@tanstack/react-query';
 import React, { useMemo } from 'react';
+import { CategoriesSelect } from '../CategoriesSelect';
 import { BulkLoadMovementModal } from '../modals/BulkLoadMovementModal';
 import { BulkMovementEditModal } from '../modals/BulkMovementEditModal';
 import { CreateEditMovementModal } from '../modals/CreateEditMovementModal';
-import { CategoriesSelect } from '../CategoriesSelect';
 import { MovementsTableSkeleton } from './MovementsTableSkeleton';
 import { MovementsTableToolbar } from './MovementsTableToolbar';
+import { ConfirmDeleteMovementModal } from '../modals/ConfirmDeleteMovementModal';
 
 type MovementsTableProps = {
   user: User;
@@ -79,6 +80,10 @@ const MovementsTable = ({
   const [isBulkLoadModalOpen, setIsBulkLoadModalOpen] = React.useState(false);
   const [isBulkMovementEditModalOpen, setIsBulkMovementModalOpen] = React.useState(false);
   const [isCreateMovementModalOpen, setIsCreateMovementModalOpen] = React.useState(false);
+
+  const [selectedMovement, setSelectedMovement] = React.useState<Movement>();
+
+  const [isDeleteMovementModalOpen, setIsDeleteMovementModalOpen] = React.useState(false);
 
   const isUpdateDisabled = useMemo(() => ![queryStatus, patchStatus].includes('success'), [patchStatus, queryStatus]);
 
@@ -278,7 +283,24 @@ const MovementsTable = ({
                         </Td>
                         <Td>
                           <Tooltip content="Eliminar movimiento">
-                            <Button variant="plain" onClick={() => deleteMovement(movement.id)} icon={<TrashIcon />} />
+                            <Button
+                              variant="plain"
+                              onClick={() => {
+                                setSelectedMovement(movement);
+                                setIsDeleteMovementModalOpen(true);
+                              }}
+                              icon={<TrashIcon />}
+                            />
+                          </Tooltip>
+                          <Tooltip content="Editar movimiento">
+                            <Button
+                              variant="plain"
+                              onClick={() => {
+                                setSelectedMovement(movement);
+                                setIsCreateMovementModalOpen(true);
+                              }}
+                              icon={<PencilAltIcon />}
+                            />
                           </Tooltip>
                         </Td>
                       </Tr>
@@ -339,8 +361,26 @@ const MovementsTable = ({
         <CreateEditMovementModal
           user={user}
           categories={categories}
-          onSubmitCallback={(movement: Partial<Movement>) => postMovement(movement)}
+          onSubmitCallback={(movement: Partial<Movement>) =>
+            selectedMovement ? patchMovements([movement as Movement]) : postMovement(movement)
+          }
           onCloseCallback={() => setIsCreateMovementModalOpen(false)}
+          movement={selectedMovement}
+        />
+      ) : null}
+
+      {isDeleteMovementModalOpen && selectedMovement ? (
+        <ConfirmDeleteMovementModal
+          movement={selectedMovement}
+          onClose={() => {
+            setSelectedMovement(undefined);
+            setIsDeleteMovementModalOpen(false);
+          }}
+          onConfirm={() => {
+            deleteMovement(selectedMovement.id);
+            setSelectedMovement(undefined);
+            setIsDeleteMovementModalOpen(false);
+          }}
         />
       ) : null}
     </>
