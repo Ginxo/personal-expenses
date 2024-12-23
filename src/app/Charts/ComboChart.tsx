@@ -20,8 +20,6 @@ const ComboChart = ({
   numberOfMonthsCallback,
   categorySumByMonthStatus,
 }: ComboChartProps) => {
-  const [numberOfMonthsValue, setNumberOfMonthsValue] = React.useState<number>(numberOfMonths);
-
   const data = useMemo(() => {
     if (categorySumByMonth && categoryList) {
       const categoriesIds = Object.values(categorySumByMonth).flatMap((categorySum) =>
@@ -41,20 +39,28 @@ const ComboChart = ({
         'MES',
         'INGRESOS',
         'GASTOS',
+        'AHORRO',
         ...sortedCategoriesValues.map((category) => category.name.toUpperCase()),
       ];
       const lines = Object.entries(categorySumByMonth).map(([month, categorySums]) => [
         month,
         categorySums
-          .map((categorySum) => +categorySum._sum.amount)
+          .map((categorySum) => parseFloat(`${categorySum._sum.amount}`))
           .filter((amount) => amount > 0)
           .reduce((acc, curr) => acc + curr, 0),
         categorySums
-          .map((categorySum) => categorySum._sum.amount)
+          .map((categorySum) => parseFloat(`${categorySum._sum.amount}`))
           .filter((amount) => amount < 0)
           .reduce((acc, curr) => acc - curr, 0),
+        categorySums
+          .map((categorySum) => parseFloat(`${categorySum._sum.amount}`))
+          .reduce((acc, curr) => acc + curr, 0),
         ...sortedCategoriesValues.map((category) =>
-          parseFloat(`${categorySums.find((categorySum) => categorySum.categoryId === category.id)?._sum.amount ?? 0}`),
+          Math.abs(
+            parseFloat(
+              `${categorySums.find((categorySum) => categorySum.categoryId === category.id)?._sum.amount ?? 0}`,
+            ),
+          ),
         ),
       ]);
       return [header, ...lines.filter((line) => line.slice(1).filter((e) => e !== 0).length > line.length / 3)];
@@ -89,7 +95,7 @@ const ComboChart = ({
             vAxis: { minValue: 100 },
             chartArea: { width: '90%', height: '80%' },
             seriesType: 'line',
-            series: { 0: { type: 'bars' }, 1: { type: 'bars' } },
+            series: { 0: { type: 'bars' }, 1: { type: 'bars' }, 2: { type: 'bars' } },
           }}
           legendToggle
         />
