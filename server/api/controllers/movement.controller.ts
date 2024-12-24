@@ -42,7 +42,12 @@ const getMovements = async (req: Request, res: Response) => {
         ...queryToPagination({ page, size }),
         ...queryToOrderBy({ order_by, direction }, { category: { name: direction as string } }),
       }),
-      prisma.movement.count(),
+      prisma.movement.count({
+        where: {
+          userId,
+          ...JSON.parse(JSON.stringify(filter)),
+        },
+      }),
     ]);
 
     res.status(200).json({
