@@ -3,12 +3,12 @@ import { Button, Modal, ModalBody, ModalFooter, ModalHeader, ModalVariant } from
 import React from 'react';
 
 type ConfirmDeleteMovementProps = {
-  movement: Movement;
+  movements: Movement[];
   onClose: () => void;
   onConfirm: () => void;
 };
 
-const ConfirmDeleteMovementModal = ({ movement, onClose, onConfirm }: ConfirmDeleteMovementProps) => (
+const ConfirmDeleteMovementModal = ({ movements, onClose, onConfirm }: ConfirmDeleteMovementProps) => (
   <Modal
     isOpen
     onClose={onClose}
@@ -19,7 +19,8 @@ const ConfirmDeleteMovementModal = ({ movement, onClose, onConfirm }: ConfirmDel
   >
     <ModalHeader title="¿Estás Segur@?" labelId="basic-modal-title" />
     <ModalBody id="modal-box-body-basic">
-      ¿Estás segur@ que quieres eliminar el movimiento {movement.name}? La acción no se puede deshacer.
+      ¿Estás segur@ que quieres eliminar el/los movimiento/s {movements.map((movement) => movement.name).join(', ')}? La
+      acción no se puede deshacer.
     </ModalBody>
     <ModalFooter>
       <Button key="confirm" variant="primary" onClick={onConfirm}>
