@@ -12,6 +12,7 @@ type ComboChartProps = {
   categorySumByMonthStatus: QueryStatus;
   numberOfMonths: number;
   numberOfMonthsCallback: (numberOfMonths: number) => void;
+  selectedCategories?: string[];
 };
 const ComboChart = ({
   categorySumByMonth,
@@ -19,6 +20,7 @@ const ComboChart = ({
   numberOfMonths,
   numberOfMonthsCallback,
   categorySumByMonthStatus,
+  selectedCategories,
 }: ComboChartProps) => {
   const data = useMemo(() => {
     if (categorySumByMonth && categoryList) {
@@ -33,7 +35,12 @@ const ComboChart = ({
         {},
       );
 
-      const sortedCategoriesValues = Object.values(categoriesMap).sort((a, b) => a.name.localeCompare(b.name));
+      const sortedCategoriesValues = Object.values(categoriesMap)
+        .filter(
+          (category) =>
+            category !== undefined && (selectedCategories === undefined || selectedCategories.includes(category.id)),
+        )
+        .sort((a, b) => a.name.localeCompare(b.name));
 
       const header = [
         'MES',
@@ -67,7 +74,7 @@ const ComboChart = ({
     } else {
       return [];
     }
-  }, [categorySumByMonth, categoryList]);
+  }, [categorySumByMonth, categoryList, selectedCategories]);
 
   return (
     <>
