@@ -10,15 +10,11 @@ type ComboChartProps = {
   categorySumByMonth: { [month: string]: CategorySum[] } | undefined;
   categoryList: CategoryList | undefined;
   categorySumByMonthStatus: QueryStatus;
-  numberOfMonths: number;
-  numberOfMonthsCallback: (numberOfMonths: number) => void;
   selectedCategories?: string[];
 };
 const ComboChart = ({
   categorySumByMonth,
   categoryList,
-  numberOfMonths,
-  numberOfMonthsCallback,
   categorySumByMonthStatus,
   selectedCategories,
 }: ComboChartProps) => {
@@ -76,38 +72,22 @@ const ComboChart = ({
     }
   }, [categorySumByMonth, categoryList, selectedCategories]);
 
-  return (
-    <>
-      <Slider
-        value={numberOfMonths}
-        min={1}
-        max={12}
-        step={1}
-        hasTooltipOverThumb
-        onChange={(_event, number) => {
-          // setNumberOfMonthsValue(number);
-          numberOfMonthsCallback(number);
-        }}
-        disabled={categorySumByMonthStatus === 'pending'}
-      />
-      {categorySumByMonthStatus === 'pending' || data.length === 0 ? (
-        <Skeleton height="250px" />
-      ) : (
-        <Chart
-          chartType="ComboChart"
-          data={data}
-          options={{
-            hAxis: { titleTextStyle: { color: '#333' } },
-            legend: { position: 'top', maxLines: 3 },
-            vAxis: { minValue: 100 },
-            chartArea: { width: '90%', height: '80%' },
-            seriesType: 'line',
-            series: { 0: { type: 'bars' }, 1: { type: 'bars' }, 2: { type: 'bars' } },
-          }}
-          legendToggle
-        />
-      )}
-    </>
+  return categorySumByMonthStatus === 'pending' || data.length === 0 ? (
+    <Skeleton height="250px" />
+  ) : (
+    <Chart
+      chartType="ComboChart"
+      data={data}
+      options={{
+        hAxis: { titleTextStyle: { color: '#333' } },
+        legend: { position: 'top', maxLines: 3 },
+        vAxis: { minValue: 100 },
+        chartArea: { width: '90%', height: '80%' },
+        seriesType: 'line',
+        series: { 0: { type: 'bars' }, 1: { type: 'bars' }, 2: { type: 'bars' } },
+      }}
+      legendToggle
+    />
   );
 };
 

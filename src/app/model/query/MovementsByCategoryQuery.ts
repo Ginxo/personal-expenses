@@ -1,4 +1,3 @@
-
 type MovementsByCategoryQuery = {
   from?: string;
   to?: string;

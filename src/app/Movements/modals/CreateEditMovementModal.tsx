@@ -61,7 +61,7 @@ const CreateEditMovementModal = ({
       aria-labelledby="create-edit-movement-modal"
       aria-describedby="create-edit-movement-modal-with-dropdown"
     >
-      <ModalHeader title={`${movementState.id ? 'Editar' : 'Crear'} Movimiento`} labelId="modal-with-dropdown" />
+      <ModalHeader title={`${movement?.id ? 'Editar' : 'Crear'} Movimiento`} labelId="modal-with-dropdown" />
       <ModalBody id="modal-box-body-with-dropdown">
         <FormGroup label="Fecha" fieldId="fecha">
           <DatePicker
