@@ -49,7 +49,8 @@ const CreateEditMovementModal = ({
       setMovementState(movement as Movement);
       setSelectedCategoryId(movement?.categoryId ?? selectedCategoryId);
     }
-  }, [movement, movementState, selectedCategoryId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [movement, selectedCategoryId]);
 
   return movementState ? (
     <Modal
@@ -62,7 +63,6 @@ const CreateEditMovementModal = ({
     >
       <ModalHeader title={`${movementState.id ? 'Editar' : 'Crear'} Movimiento`} labelId="modal-with-dropdown" />
       <ModalBody id="modal-box-body-with-dropdown">
-        {JSON.stringify(movementState)}
         <FormGroup label="Fecha" fieldId="fecha">
           <DatePicker
             onChange={(_, _value, date) =>

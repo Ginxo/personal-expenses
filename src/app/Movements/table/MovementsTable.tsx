@@ -19,10 +19,10 @@ import React, { useMemo } from 'react';
 import { CategoriesSelect } from '../CategoriesSelect';
 import { BulkLoadMovementModal } from '../modals/BulkLoadMovementModal';
 import { BulkMovementEditModal } from '../modals/BulkMovementEditModal';
+import { ConfirmDeleteMovementModal } from '../modals/ConfirmDeleteMovementModal';
 import { CreateEditMovementModal } from '../modals/CreateEditMovementModal';
 import { MovementsTableSkeleton } from './MovementsTableSkeleton';
 import { MovementsTableToolbar } from './MovementsTableToolbar';
-import { ConfirmDeleteMovementModal } from '../modals/ConfirmDeleteMovementModal';
 
 type MovementsTableProps = {
   user: User;
@@ -39,7 +39,6 @@ type MovementsTableProps = {
   patchMovements: (movements: Movement[]) => void;
   postMovement: (movement: Partial<Movement>) => void;
   postCategory: (category: Partial<Category>) => void;
-  deleteMovement: (id: string) => void;
   deleteMovements: (movements: Movement[]) => void;
   bulkMovements: (movements: Movement[]) => void;
   invalidateBulkMovements: () => void;
@@ -61,7 +60,6 @@ const MovementsTable = ({
   patchMovements,
   postMovement,
   postCategory,
-  deleteMovement,
   deleteMovements,
   bulkMovements,
   invalidateBulkMovements,
@@ -81,7 +79,7 @@ const MovementsTable = ({
   const [isBulkMovementEditModalOpen, setIsBulkMovementModalOpen] = React.useState(false);
   const [isCreateMovementModalOpen, setIsCreateMovementModalOpen] = React.useState(false);
 
-  const [selectedMovement, setSelectedMovement] = React.useState<Movement>();
+  const [selectedMovementToEdit, setSelectedMovementToEdit] = React.useState<Movement>();
 
   const [isDeleteMovementModalOpen, setIsDeleteMovementModalOpen] = React.useState(false);
 
@@ -213,8 +211,8 @@ const MovementsTable = ({
                                 size="sm"
                                 isDisabled={!isAnyRowSelected}
                                 onClick={() => {
-                                  deleteMovements(selectedMovements);
-                                  setSelectedMovements([]);
+                                  setSelectedMovements(selectedMovements);
+                                  setIsDeleteMovementModalOpen(true);
                                 }}
                                 icon={<TrashIcon />}
                               />
@@ -286,7 +284,7 @@ const MovementsTable = ({
                             <Button
                               variant="plain"
                               onClick={() => {
-                                setSelectedMovement(movement);
+                                setSelectedMovements([movement]);
                                 setIsDeleteMovementModalOpen(true);
                               }}
                               icon={<TrashIcon />}
@@ -296,7 +294,7 @@ const MovementsTable = ({
                             <Button
                               variant="plain"
                               onClick={() => {
-                                setSelectedMovement(movement);
+                                setSelectedMovementToEdit(movement);
                                 setIsCreateMovementModalOpen(true);
                               }}
                               icon={<PencilAltIcon />}
@@ -362,23 +360,23 @@ const MovementsTable = ({
           user={user}
           categories={categories}
           onSubmitCallback={(movement: Partial<Movement>) =>
-            selectedMovement ? patchMovements([movement as Movement]) : postMovement(movement)
+            selectedMovementToEdit ? patchMovements([movement as Movement]) : postMovement(movement)
           }
           onCloseCallback={() => setIsCreateMovementModalOpen(false)}
-          movement={selectedMovement}
+          movement={selectedMovementToEdit}
         />
       ) : null}
 
-      {isDeleteMovementModalOpen && selectedMovement ? (
+      {isDeleteMovementModalOpen && selectedMovements?.length ? (
         <ConfirmDeleteMovementModal
-          movement={selectedMovement}
+          movements={selectedMovements}
           onClose={() => {
-            setSelectedMovement(undefined);
+            setSelectedMovements([]);
             setIsDeleteMovementModalOpen(false);
           }}
           onConfirm={() => {
-            deleteMovement(selectedMovement.id);
-            setSelectedMovement(undefined);
+            deleteMovements(selectedMovements);
+            setSelectedMovements([]);
             setIsDeleteMovementModalOpen(false);
           }}
         />
