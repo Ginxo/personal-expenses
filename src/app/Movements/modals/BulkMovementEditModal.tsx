@@ -28,7 +28,7 @@ const BulkMovementEditModal = ({
   onCloseCallback,
 }: BulkMovementEditModalProps) => {
   const [selectedCategoryId, setSelectedCategoryId] = React.useState<string | undefined>(categories?.[0]?.id ?? '');
-  const [selectedType, setSelectedType] = React.useState<Movement['type']>(MovementTypes[0]);
+  const [selectedType, setSelectedType] = React.useState<Movement['type']>(MovementTypes[1]);
   return (
     <Modal
       isOpen
