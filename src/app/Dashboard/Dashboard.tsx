@@ -1,3 +1,4 @@
+import { ComboChart } from '@app/Charts/ComboChart';
 import { MovementsTable } from '@app/Movements/table/MovementsTable';
 import { Category } from '@app/model/Category';
 import { Movement } from '@app/model/Movement';
@@ -6,9 +7,9 @@ import { MovementsQuery } from '@app/model/query/MovementsQuery';
 import { useFetchCategories } from '@app/queries/categories/useFetchCategories';
 import { usePostCategory } from '@app/queries/categories/usePostCategory';
 import { useBulkMovement } from '@app/queries/movements/useBulkMovement';
-import { useDeleteMovement } from '@app/queries/movements/useDeleteMovement';
 import { useDeleteMovements } from '@app/queries/movements/useDeleteMovements';
 import { useFetchMovements } from '@app/queries/movements/useFetchMovements';
+import { useFetchMovementsByCategory } from '@app/queries/movements/useFetchMovementsByCategory';
 import { usePatchMovements } from '@app/queries/movements/usePatchMovements';
 import { usePostMovement } from '@app/queries/movements/usePostMovement';
 import { useFetchUser } from '@app/queries/users/useFetchUser';
@@ -21,6 +22,8 @@ const Dashboard: React.FunctionComponent = () => {
   const [movementsQuery, setMovementsQuery] = React.useState<MovementsQuery>({
     page: 1,
     size: 20,
+    order_by: 'date',
+    direction: 'desc',
   });
   const [categoriesQuery] = React.useState<CategoriesQuery>({
     page: 1,
@@ -35,14 +38,23 @@ const Dashboard: React.FunctionComponent = () => {
   const bulkMovements = useBulkMovement('dashboard');
   const postMovement = usePostMovement('dashboard');
   const postCategory = usePostCategory('dashboard');
-  const deleteMovement = useDeleteMovement('dashboard');
   const deleteMovements = useDeleteMovements('dashboard');
+  const movementsByCategory = useFetchMovementsByCategory('dashboard', {
+    from: movementsQuery.from,
+    to: movementsQuery.to,
+  });
 
   return (
     <PageSection hasBodyWrapper={false}>
       <Title headingLevel="h1" size="lg">
         Dashboard
       </Title>
+      <ComboChart
+        categorySumByMonth={movementsByCategory.data}
+        categoryList={fetchCategories.data}
+        categorySumByMonthStatus={movementsByCategory.status}
+        selectedCategories={movementsQuery.categories}
+      />
       <MovementsTable
         user={user!}
         movements={fetchMovements.data?.data}
@@ -57,11 +69,11 @@ const Dashboard: React.FunctionComponent = () => {
         refetchMovementsCallback={() => {
           fetchMovements.refetch();
           fetchCategories.refetch();
+          movementsByCategory.refetch();
         }}
         patchMovements={(movements: Movement[]) => patchMovements.mutate(movements)}
         postMovement={(movement: Partial<Movement>) => postMovement.mutate(movement)}
         postCategory={(category: Partial<Category>) => postCategory.mutate(category)}
-        deleteMovement={(id: string) => deleteMovement.mutate(id)}
         deleteMovements={(movements: Movement[]) => deleteMovements.mutate(movements.map((m) => m.id))}
         bulkMovements={(movements: Movement[]) => bulkMovements.mutate(movements)}
         invalidateBulkMovements={async () => await bulkMovements.reset()}

@@ -27,17 +27,32 @@ type CreateEditMovementModalProps = {
 };
 const CreateEditMovementModal = ({
   user,
-  movement = {
-    date: dayjs.utc(new Date()).toISOString(),
-    type: 'income',
-  },
+  movement,
   categories,
   onSubmitCallback,
   onCloseCallback,
 }: CreateEditMovementModalProps) => {
-  const [selectedCategoryId, setSelectedCategoryId] = React.useState<string | undefined>(categories?.[0]?.id ?? '');
-  const [movementState, setMovementState] = React.useState<Movement>({ ...(movement as Movement) });
-  return (
+  const [selectedCategoryId, setSelectedCategoryId] = React.useState<string | undefined>();
+  const [movementState, setMovementState] = React.useState<Movement>();
+
+  React.useEffect(() => {
+    setMovementState({
+      date: dayjs.utc(new Date()).toISOString(),
+      type: 'income',
+    } as Movement);
+    setSelectedCategoryId(categories?.[0]?.id ?? '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (movement !== undefined && JSON.stringify(movement) !== JSON.stringify(movementState)) {
+      setMovementState(movement as Movement);
+      setSelectedCategoryId(movement?.categoryId ?? selectedCategoryId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [movement, selectedCategoryId]);
+
+  return movementState ? (
     <Modal
       isOpen
       variant={ModalVariant.small}
@@ -46,7 +61,7 @@ const CreateEditMovementModal = ({
       aria-labelledby="create-edit-movement-modal"
       aria-describedby="create-edit-movement-modal-with-dropdown"
     >
-      <ModalHeader title={`${movement.id ? 'Editar' : 'Crear'} Movimiento`} labelId="modal-with-dropdown" />
+      <ModalHeader title={`${movement?.id ? 'Editar' : 'Crear'} Movimiento`} labelId="modal-with-dropdown" />
       <ModalBody id="modal-box-body-with-dropdown">
         <FormGroup label="Fecha" fieldId="fecha">
           <DatePicker
@@ -109,12 +124,12 @@ const CreateEditMovementModal = ({
             ouiaId="CategoryFormSelect"
           >
             {categories?.map((category, index) => (
-              <FormSelectOption key={index} value={category.id} label={category.name} />
+              <FormSelectOption key={index} value={category.id} label={category.name.toUpperCase()} />
             ))}
           </FormSelect>
         </FormGroup>
         <br />
-        <FormGroup label="Typo" fieldId="tipo">
+        <FormGroup label="Tipo" fieldId="tipo">
           <FormSelect
             value={movementState.type}
             onChange={(_event, type) =>
@@ -126,8 +141,8 @@ const CreateEditMovementModal = ({
             aria-label="Type FormSelect Input"
             ouiaId="TypeFormSelect"
           >
-            {MovementTypes.map((category, index) => (
-              <FormSelectOption key={index} value={category} label={category} />
+            {MovementTypes.map((type, index) => (
+              <FormSelectOption key={index} value={type} label={type.toUpperCase()} />
             ))}
           </FormSelect>
         </FormGroup>
@@ -157,7 +172,7 @@ const CreateEditMovementModal = ({
         </Button>
       </ModalFooter>
     </Modal>
-  );
+  ) : null;
 };
 
 export { CreateEditMovementModal };

@@ -214,7 +214,7 @@ const MovementsTableToolbar = ({
                     value={type}
                     isSelected={selectedTypes.includes(type)}
                   >
-                    {type}
+                    {type.toUpperCase()}
                   </SelectOption>
                 ))}
               </SelectList>
