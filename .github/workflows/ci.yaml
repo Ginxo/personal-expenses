@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: 20
       - name: Install dependencies
         run: yarn install
   lint:
@@ -40,7 +40,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: 20
       - name: Run eslint
         run: yarn lint
   test:
@@ -61,7 +61,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: 20
       - name: Run tests
         run: yarn test
   build:
@@ -82,7 +82,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: 20
       - name: Attempt a build
         run: yarn build
   deployment_check:
@@ -103,6 +103,6 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: 20
       - name: Attempt a build
         run: npm run type-check && npm run clean
