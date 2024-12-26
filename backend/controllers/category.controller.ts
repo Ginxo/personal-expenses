@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { prisma } from '../server';
 import { queryToPagination } from './queryToPagination';
 import { queryToOrderBy } from './queryToOrderBy';
+import { prisma } from '..';
 
 const createCategory = async (req: Request, res: Response) => {
   try {
