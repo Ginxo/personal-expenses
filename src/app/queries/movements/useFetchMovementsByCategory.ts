@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useFetchUser } from '../users/useFetchUser';
 import { movementsKeys } from './movementsKeys';
+import { useFetchAccessToken } from '../users/useFetchToken';
 
 export const refetchMovements = (baseKey: string) =>
   queryClient.invalidateQueries({ queryKey: movementsKeys.byCategory(baseKey) });
@@ -18,6 +19,7 @@ const select = (
 
 export const useFetchMovementsByCategory = (baseKey: string, query: MovementsByCategoryQuery) => {
   const { user } = useFetchUser();
+  const { accessToken } = useFetchAccessToken();
 
   const userId: string = user?.id as string;
 
@@ -38,16 +40,20 @@ export const useFetchMovementsByCategory = (baseKey: string, query: MovementsByC
             to: endingDate.subtract(month, 'month').endOf('month').toISOString(),
           }))
           .map(async (dateFilter) => ({
-            [`${dateFilter.key}`]: await getMovementsByCategory(userId, {
-              from: dateFilter.from,
-              to: dateFilter.to,
-            }).then((response) => response.data),
+            [`${dateFilter.key}`]: await getMovementsByCategory(
+              userId,
+              {
+                from: dateFilter.from,
+                to: dateFilter.to,
+              },
+              accessToken!,
+            ).then((response) => response.data),
           }))
           .map((response) => response.then((e) => e)),
       );
     },
     select,
-    enabled: !!userId,
+    enabled: !!userId && accessToken !== undefined,
     retry: false,
   });
 

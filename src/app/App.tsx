@@ -19,6 +19,7 @@ const App: React.FunctionComponent = () => {
         clientId="skHrwdIjywQZSeYtkxbo8Mb1uzGJPBoB"
         authorizationParams={{
           redirect_uri: window.location.origin,
+          audience: 'https://personal-expenses/api',
         }}
       >
         <Router>
