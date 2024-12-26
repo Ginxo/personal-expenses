@@ -1,7 +1,7 @@
 import { Category } from '@app/model/Category';
 import { CategoryList } from '@app/model/CategoryList';
 import { CategorySum } from '@app/model/CategorySum';
-import { Skeleton, Slider } from '@patternfly/react-core';
+import { Skeleton } from '@patternfly/react-core';
 import { QueryStatus } from '@tanstack/react-query';
 import React, { useMemo } from 'react';
 import Chart from 'react-google-charts';
