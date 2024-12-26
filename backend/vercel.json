@@ -1,3 +1,16 @@
 {
-  "rewrites": [{ "source": "/api/(.*)", "destination": "/api" }]
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/dist/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "backend/dist/index.js"
+    }
+  ],
+  "buildCommand": "yarn install --prefix backend && yarn install --prefix frontend && yarn build --prefix backend && yarn build --prefix frontend"
 }
