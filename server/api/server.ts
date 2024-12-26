@@ -4,6 +4,7 @@ import MovementsRouter from './routes/movement.route';
 import CategoriesRouter from './routes/category.route';
 import UsersRouter from './routes/user.route';
 import cors from 'cors';
+import { auth } from 'express-oauth2-jwt-bearer';
 
 export const prisma = new PrismaClient();
 
@@ -11,9 +12,16 @@ const app = express();
 
 const port = 3000;
 
+const checkJwt = auth({
+  audience: 'https://personal-expenses/api',
+  issuerBaseURL: 'https://dev-5qtc1u8vxnkci4p2.us.auth0.com/',
+  tokenSigningAlg: 'RS256',
+});
+
 async function main() {
   app.use(express.json());
   app.use(cors());
+  app.use(checkJwt);
 
   // Register API routes
   app.use('/api/v1/movements', MovementsRouter);
