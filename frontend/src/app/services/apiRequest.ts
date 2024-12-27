@@ -1,7 +1,8 @@
 import type { AxiosInstance } from 'axios';
 import axios, { InternalAxiosRequestConfig, RawAxiosRequestConfig } from 'axios';
 
-const getBaseUrl = () => 'http://localhost:3000/api/v1';
+const getBaseUrl = () =>
+  process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/v1` : 'http://localhost:3000/api/v1';
 
 const AuthInterceptor = (client: AxiosInstance, accessToken: string): AxiosInstance => {
   client.interceptors.request.use(async (cfg) => {
