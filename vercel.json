@@ -12,5 +12,5 @@
       "dest": "backend/dist/index.js"
     }
   ],
-  "buildCommand": "yarn install --prefix backend && yarn install --prefix frontend && yarn build --prefix backend && yarn build --prefix frontend"
+  "buildCommand": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix backend"
 }

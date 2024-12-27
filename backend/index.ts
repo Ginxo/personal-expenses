@@ -23,12 +23,11 @@ async function main() {
   // API Server
   app.use(express.json());
   app.use(cors());
-  app.use(checkJwt);
 
   // Register API routes
-  app.use("/api/v1/movements", MovementsRouter);
-  app.use("/api/v1/categories", CategoriesRouter);
-  app.use("/api/v1/users", UsersRouter);
+  app.use("/api/v1/movements", checkJwt, MovementsRouter);
+  app.use("/api/v1/categories", checkJwt, CategoriesRouter);
+  app.use("/api/v1/users", checkJwt, UsersRouter);
 
   // Static Content
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
