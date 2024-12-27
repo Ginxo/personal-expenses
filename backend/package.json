@@ -15,7 +15,8 @@
     "type-check": "tsc --noEmit",
     "db:generate": "zenstack generate --schema ./schema.zmodel",
     "db:push": "prisma db push --schema ./prisma/schema.prisma",
-    "start": "tsx watch index.ts",
+    "start": "tsx index.ts",
+    "start:dev": "tsx watch index.ts",
     "clean": "rimraf dist",
     "predeploy": "npm run build"
   },
