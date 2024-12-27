@@ -7,6 +7,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "postinstall": "npm run prisma:generate",
     "prebuild": "npm run type-check && npm run clean",
     "build": "webpack",
     "eslint": "eslint --ext .tsx,.js ./",
@@ -14,8 +15,9 @@
     "format": "prettier --check --write ./**/*.{tsx,ts}",
     "type-check": "tsc --noEmit",
     "db:generate": "zenstack generate --schema ./schema.zmodel",
+    "prisma:generate": "prisma generate",
     "db:push": "prisma db push --schema ./prisma/schema.prisma",
-    "start": "tsx index.ts",
+    "start": "node index.js",
     "start:dev": "tsx watch index.ts",
     "clean": "rimraf dist",
     "predeploy": "npm run build"
