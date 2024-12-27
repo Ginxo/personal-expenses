@@ -30,10 +30,10 @@ async function main() {
   app.use("/api/v1/users", checkJwt, UsersRouter);
 
   // Static Content
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+  app.use(express.static(path.join(__dirname, "../../frontend/dist")));
   // Handle requests by serving index.html for all routes
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/dist", "index.html"));
+    res.sendFile(path.join(__dirname, "../../frontend/dist", "index.html"));
   });
 
   // Catch unregistered routes

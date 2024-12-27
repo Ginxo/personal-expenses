@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "prebuild": "npm run type-check && npm run clean",
-    "build": "tsc",
+    "build": "webpack",
     "eslint": "eslint --ext .tsx,.js ./",
     "lint": "npm run eslint",
     "format": "prettier --check --write ./**/*.{tsx,ts}",
@@ -36,15 +36,19 @@
     "prettier": "^3.3.0",
     "prop-types": "^15.8.1",
     "swagger-ui-express": "^5.0.1",
+    "ts-loader": "^9.5.1",
     "tsx": "^4.19.2",
-    "typescript": "^5.4.5",
+    "typescript": "^5.7.2",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1",
+    "webpack-node-externals": "^3.0.0",
     "zenstack": "2.10.0"
   },
   "dependencies": {
     "@prisma/client": "6.0.x",
+    "cors": "^2.8.5",
     "express": "^4.21.1",
     "express-oauth2-jwt-bearer": "^1.6.0",
-    "cors": "^2.8.5",
     "prisma": "6.0.x",
     "qs": "^6.13.1"
   },
