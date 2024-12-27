@@ -7,9 +7,7 @@ type AuthenticationGuardProps = {
 
 export const AuthenticationGuard = ({ component }: AuthenticationGuardProps) => {
   const Component = withAuthenticationRequired(component, {
-    onRedirecting: () => {
-      <div>Loading...</div>;
-    },
+    onRedirecting: () => <div>Loading...</div>,
   });
 
   return <Component />;

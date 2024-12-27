@@ -7,15 +7,18 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "postinstall": "npm run prisma:generate",
     "prebuild": "npm run type-check && npm run clean",
-    "build": "tsc",
+    "build": "webpack",
     "eslint": "eslint --ext .tsx,.js ./",
     "lint": "npm run eslint",
     "format": "prettier --check --write ./**/*.{tsx,ts}",
     "type-check": "tsc --noEmit",
     "db:generate": "zenstack generate --schema ./schema.zmodel",
+    "prisma:generate": "prisma generate",
     "db:push": "prisma db push --schema ./prisma/schema.prisma",
-    "start": "tsx watch index.ts",
+    "start": "node index.js",
+    "start:dev": "tsx watch index.ts",
     "clean": "rimraf dist",
     "predeploy": "npm run build"
   },
@@ -35,20 +38,24 @@
     "prettier": "^3.3.0",
     "prop-types": "^15.8.1",
     "swagger-ui-express": "^5.0.1",
+    "ts-loader": "^9.5.1",
     "tsx": "^4.19.2",
-    "typescript": "^5.4.5",
+    "typescript": "^5.7.2",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1",
+    "webpack-node-externals": "^3.0.0",
     "zenstack": "2.10.0"
   },
   "dependencies": {
     "@prisma/client": "6.0.x",
+    "cors": "^2.8.5",
     "express": "^4.21.1",
     "express-oauth2-jwt-bearer": "^1.6.0",
-    "cors": "^2.8.5",
     "prisma": "6.0.x",
     "qs": "^6.13.1"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
   "engines": {
-    "node": "<=20.11.0"
+    "node": "<=20.18.1"
   }
 }

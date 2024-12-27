@@ -12,13 +12,14 @@ yarn install && yarn start:dev
 
 ```sh
 # Install development/build dependencies
-yarn install
+npm install --prefix backend && npm install --prefix frontend
 
 # Start the development server
-yarn start:dev
+npm run start:dev --prefix frontend
 
 # Run a production build (outputs to "dist" dir)
-yarn build
+npm run build --prefix backend
+npm run build --prefix frontend
 
 # Run the test suite
 yarn test

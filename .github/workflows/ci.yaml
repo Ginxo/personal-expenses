@@ -14,14 +14,14 @@ jobs:
         uses: actions/checkout@v4
       - uses: actions/cache@v4
         with:
-          path: './node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          path: "./node_modules"
+          key: ${{ runner.os }}-${{ hashFiles('backend/package-lock.json') }}-${{ hashFiles('frontend/package-lock.json') }}
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
       - name: Install dependencies
-        run: yarn install
+        run: npm install --prefix backend && npm install --prefix frontend
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -34,15 +34,15 @@ jobs:
         uses: actions/checkout@v4
       - uses: actions/cache/restore@v4
         with:
-          path: './node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          path: "./node_modules"
+          key: ${{ runner.os }}-${{ hashFiles('backend/package-lock.json') }}-${{ hashFiles('frontend/package-lock.json') }}
           fail-on-cache-miss: true
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
       - name: Run eslint
-        run: yarn lint
+        run: npm run lint --prefix backend && npm run lint --prefix frontend
   test:
     name: Test
     runs-on: ubuntu-latest
@@ -55,15 +55,15 @@ jobs:
         uses: actions/checkout@v4
       - uses: actions/cache/restore@v4
         with:
-          path: './node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          path: "./node_modules"
+          key: ${{ runner.os }}-${{ hashFiles('backend/package-lock.json') }}-${{ hashFiles('frontend/package-lock.json') }}
           fail-on-cache-miss: true
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
       - name: Run tests
-        run: yarn test
+        run: npm run test --prefix backend && npm run test --prefix frontend
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -76,15 +76,15 @@ jobs:
         uses: actions/checkout@v4
       - uses: actions/cache/restore@v4
         with:
-          path: './node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          path: "./node_modules"
+          key: ${{ runner.os }}-${{ hashFiles('backend/package-lock.json') }}-${{ hashFiles('frontend/package-lock.json') }}
           fail-on-cache-miss: true
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
       - name: Attempt a build
-        run: yarn build
+        run: npm run build --prefix backend && npm run build --prefix frontend
   deployment_check:
     name: Deployment Check
     runs-on: ubuntu-latest
@@ -97,8 +97,8 @@ jobs:
         uses: actions/checkout@v4
       - uses: actions/cache/restore@v4
         with:
-          path: './node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          path: "./node_modules"
+          key: ${{ runner.os }}-${{ hashFiles('backend/package-lock.json') }}-${{ hashFiles('frontend/package-lock.json') }}
           fail-on-cache-miss: true
       - name: Setup Node.js
         uses: actions/setup-node@v4

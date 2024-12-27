@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 import cors from "cors";
 import express from "express";
 import { auth } from "express-oauth2-jwt-bearer";
-import path from "path";
 import CategoriesRouter from "./routes/category.route";
 import MovementsRouter from "./routes/movement.route";
 import UsersRouter from "./routes/user.route";
@@ -11,7 +10,7 @@ export const prisma = new PrismaClient();
 
 const app = express();
 
-const port = 3000;
+const port = 4000;
 
 const checkJwt = auth({
   audience: "https://personal-expenses/api",
@@ -28,18 +27,6 @@ async function main() {
   app.use("/api/v1/movements", checkJwt, MovementsRouter);
   app.use("/api/v1/categories", checkJwt, CategoriesRouter);
   app.use("/api/v1/users", checkJwt, UsersRouter);
-
-  // Static Content
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
-  // Handle requests by serving index.html for all routes
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/dist", "index.html"));
-  });
-
-  // Catch unregistered routes
-  // app.all('*', (req: Request, res: Response) => {
-  //   res.status(404).json({ error: `Route ${req.originalUrl} not found` });
-  // });
 
   app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
